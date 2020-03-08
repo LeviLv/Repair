@@ -86,7 +86,8 @@
 
                     var url = '/User/InsertRepair';
                     var _data = {
-                        remake: this.$data.repairInfo
+                        remake: this.$data.repairInfo,
+                        communityId : this.$data.user.communityId
                     };
                     post(url, JSON.stringify(_data), function (result) {
                         $.alert("报修成功，请等待系统派单", "通知", function (result) {

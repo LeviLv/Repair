@@ -34,7 +34,7 @@ namespace Repair.Services
             Expression<Func<Community, bool>> func = p=>true;
             if (model.AdminId.HasValue)
             {
-                func.And(p => p.AdminId == model.AdminId);
+                func = func.And(p => p.AdminId == model.AdminId);
             }
 
             var user = await _userRepository.GetAllAsync();
@@ -60,6 +60,8 @@ namespace Repair.Services
         {
             var sql = $"update Community set AdminId = {userId} where Id = {commuityId} ";
             await DapperService.Execute(sql);
+            var sql2 = $"update Users set IsAdmin = 1 where Id = {userId}";
+            await DapperService.Execute(sql2);
         }
 
         public async Task<string> GetCommunityRepairMan(int id)

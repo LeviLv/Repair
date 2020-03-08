@@ -38,11 +38,32 @@ namespace Repair.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.User = JsonConvert.SerializeObject(await _userService.GetUserAsync(GetUID()));
+            var u = await _userService.GetUserAsync(GetUID());
+            if (string.IsNullOrWhiteSpace(u.Name))
+            {
+                return Redirect("/User/UserInfo");
+            }
+
+            if (u.IsRepairMan)
+            {
+                return Redirect("/Home/RepairIndex");
+            }
+            ViewBag.User = JsonConvert.SerializeObject(u);
             ViewBag.Status1 = (await _repairListService.GetRepairListByStatus(GetUID(), null)).Count;
             ViewBag.Status2 = (await _repairListService.GetRepairListByStatus(GetUID(), 2)).Count;
             ViewBag.Status3 = (await _repairListService.GetRepairListByStatus(GetUID(), 4)).Count;
             ViewBag.Status4 = (await _repairListService.GetRepairListByStatus(GetUID(), 5)).Count;
+            return View();
+        }
+
+        public async Task<IActionResult> RepairIndex()
+        {
+            var u = await _userService.GetUserAsync(GetUID());
+            ViewBag.User = JsonConvert.SerializeObject(u);
+            ViewBag.Status1 = (await _repairListService.GetRepairListByRepairManId(GetUID(), null)).Count;
+            ViewBag.Status2 = (await _repairListService.GetRepairListByRepairManId(GetUID(), 2)).Count;
+            ViewBag.Status3 = (await _repairListService.GetRepairListByRepairManId(GetUID(), 3)).Count;
+            ViewBag.Status4 = (await _repairListService.GetRepairListByRepairManId(GetUID(), 4)).Count;
             return View();
         }
 

@@ -16,7 +16,7 @@ public static class ExpressionExtensions
         this Expression<Func<T, bool>> first,
         Expression<Func<T, bool>> second)
         {
-            return first.AndAlso<T>(second, Expression.AndAlso);
+            return first.AndAlso<T>(second, Expression.AndAlso);;
         }
         /// <summary>
         /// 添加Or条件

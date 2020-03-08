@@ -20,19 +20,20 @@ namespace Repair.Controllers
 
 
             var ac = context.RouteData.Values["action"].ToString();
+#if !DEBUG
+            if (ac != "AdminLogin" && ac != "Login" && currId == null)
+            {
+                context.HttpContext.Response.Redirect("/Admin/Login");
+                return;
+            }
 
-//            if (ac != "AdminLogin" && ac != "Login" && currId == null)
-//            {
-//                context.HttpContext.Response.Redirect("/Admin/Login");
-//                return;
-//            }
-//
-//            if (currId != null)
-//            {
-//                var s = currId.ToString();
-//                loginDto.CurrentId = int.Parse(s);
-//                loginDto.CurrentRole = currRole.ToString();
-//            }
+            if (currId != null)
+            {
+                var s = currId.ToString();
+                loginDto.CurrentId = int.Parse(s);
+                loginDto.CurrentRole = currRole.ToString();
+            }
+#endif
         }
 
         public int IsSuper()
@@ -40,7 +41,7 @@ namespace Repair.Controllers
 #if DEBUG
             return 1;
 #endif
-#if DEBUG
+#if !DEBUG
             return loginDto.CurrentId == 9 ? 1 : 0;
 #endif
         }

@@ -1,8 +1,99 @@
-﻿@model object
+﻿<div class="content native-scroll" id="detail">
+    <div class="content-inner">
 
-@{
-    ViewBag.Title = "title";
-    Layout = "_Layout";
+        <div class="center-bg">
+            <!--个人信息 start-->
+
+            <div class="center-header">
+                <div class="center-box">
+                    <img class="center-head" src="~/dist/img/2.jpg" alt="">
+                </div>
+                <div class="center-info">
+                    <div class="center-info-left">
+                        <div class="center-info-lefts">
+                            <div class="center-info-name">{{user.Name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--个人信息 end-->
+            
+            
+            <div class="center-red-box">
+                <a class="center-red" href="#">
+                    <p>@ViewBag.Status1</p>
+                    <p>全部</p>
+                </a>
+                <div class="center-line"></div>
+
+                <a class="center-red" href="#">
+                    <p>@ViewBag.Status2</p>
+                    <p>待处理</p>
+                </a>
+                <div class="center-line"></div>
+
+                <a class="center-red" href="#">
+                    <p>@ViewBag.Status3</p>
+                    <p>处理中</p>
+                </a>
+                <div class="center-line"></div>
+
+                <a class="center-red" href="#">
+                    <p>@ViewBag.Status4</p>
+                    <p>已完成</p>
+                </a>
+            </div>
+            <div class="list-block center-list" style="margin-top:0rem">
+                <ul>
+                    <li>
+                        <a href="/User/RepairListAsRepairMan?status=2" class="item-link item-content">
+                            <div class="item-media">
+                                <i class="icon iconfont icon-fenxiang1 center-fenxiang1"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">待处理</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/User/RepairListAsRepairMan?status=3" class="item-link item-content">
+                            <div class="item-media">
+                                <i class="icon iconfont icon-fenxiang1 center-fenxiang1"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">处理中</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/User/RepairListAsRepairMan?status=4" class="item-link item-content">
+                            <div class="item-media">
+                                <i class="icon iconfont icon-fenxiang1 center-fenxiang1"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">已完成</div>
+                            </div>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+            <!--列表end-->
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+         var vue = new Vue({
+             el: '#detail',
+             data: {
+                 user: {}
+             },
+             created: function() {
+                 this.$data.user = @Html.Raw(ViewBag.User);
+             }
+         })
+     </script>
 }
-
-<h2>title</h2>

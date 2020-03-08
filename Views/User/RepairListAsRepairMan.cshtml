@@ -1,8 +1,77 @@
-﻿@model System.Collections.Generic.List<Repair.Entitys.RepairListDTO>
-
-@{
-    ViewBag.Title = "title";
+﻿@{
     Layout = "_Layout";
 }
+@model IList<Repair.Entitys.RepairListDTO>
+    <header class="bar bar-nav">
+        <h1 class="title">我的历史</h1>
+    </header>
+    <div class="content" id="detail">
+        @if (Model.Count > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <div class="card">
+                    <div class="card-header">@item.statusName</div>
+                    <div class="card-content">
+                        <div class="card-content-inner"  @@click="goInfo(@item.Id)">@item.Remake。<a style="float: right">详情</a></div>
+                        @if (item.Status != 1)
+                        {
+                            <div class="card-content-inner">修理工：@item.RepairManName（@item.RepairManMobile）</div>
+                        }
+                        <div class="card-content-inner">@item.statusName。（@item.CreateTime?.ToString("yyyy-MM-dd hh:mm")）
+                            @if (item.Status == 2)
+                            {
+                                <p style="margin-top: 10px" v-on:click="daoda(@item.Id,3)"><a href="#" class="button">已到达</a></p>
+                            }
+                            @if (item.Status == 3)
+                            {
+                                <p style="margin-top: 10px" v-on:click="daoda(@item.Id,4)"><a href="#" class="button">完成</a></p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p style="text-align:center">暂无信息</p>
+        }
+    </div>
+@section scripts{
+    <script>
+        var vue = new Vue({
+            el: '#detail',
+            data: {
+                repairList:[]
+            },
+            methods: {
+                goInfo: function (id) {
+                        var url = '/User/RepairInfo?id=';
+                        location.href = url + id;
+                },
+                daoda:function(id,status) {
+                    var url = "/User/UpdateRepairListStatus?repairListId=" + id + "&status=" + status;
+                    $.get(url,function(msg) {
+                      $.alert(msg.message,function() {
+                        window.location.reload()
+                      })
+                    })
+                }
+            },
+            created: function () {
 
-<h2>title</h2>
+            }
+        })
+
+
+        function GetQueryValue(queryName) {
+            var query = decodeURI(window.location.search.substring(1));
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == queryName) { return pair[1]; }
+            }
+            return null;
+        }
+    </script>
+}

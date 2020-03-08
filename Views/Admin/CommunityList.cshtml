@@ -94,7 +94,7 @@
                     }
                 },
                 pass(row, status) {
-                    this.openIframe('设置修理工', "/Admin/CommunityMan?commuityId=" + row.id, ["1200px", "600px"], function () { vue.search(vue.currPage); }, parent.layer);
+                    this.openIframe('设置修理工', "/Admin/CommunityMan?commuityId=" + row.id + "&type=1", ["1200px", "600px"], function () { vue.search(vue.currPage); }, parent.layer);
                 },
                 setAdmin(row, status) {
                     this.openIframe('设置负责人', "/Admin/CommunityMan?commuityId=" + row.id, ["1200px", "600px"], function () { vue.search(vue.currPage); }, parent.layer);

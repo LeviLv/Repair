@@ -20,7 +20,13 @@ namespace Repair.Entitys
 
         public int? RepairManId { get; set; }
 
-        public User RepairMan { get; set; }
+        public string RepairManName { get; set; }
+        
+        public string RepairManMobile { get; set; }
+
+        public int CommunityId { get; set; }
+
+        public string CommunityName { get; set; }
 
         public string Remake { get; set; }
 

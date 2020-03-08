@@ -10,6 +10,11 @@ namespace Repair.EntityFramework.Domain
     [Table("RepairListInfo")]
     public class RepairListInfo : IHasCreatedTime
     {
+        public RepairListInfo()
+        {
+            CreateTime = DateTime.Now;
+        }
+        
         [Key]
         public int Id { get; set; }
 

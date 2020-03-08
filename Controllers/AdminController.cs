@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Repair.EntityFramework.Domain;
 using Repair.Entitys;
 using Repair.Models;
 using Repair.Services;
+using System.Threading.Tasks;
 
 namespace Repair.Controllers
 {
@@ -42,6 +35,7 @@ namespace Repair.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.IsSuper = IsSuper();
             return View();
         }
 
@@ -71,7 +65,7 @@ namespace Repair.Controllers
 
         #region 用户列表
 
-        
+
         /// <summary>
         /// 用户列表
         /// </summary>
@@ -85,6 +79,12 @@ namespace Repair.Controllers
         public async Task<JsonResult> GetUserList(QueryUserModel pageBase)
         {
             var list = await _userService.GetUserList(pageBase);
+            return Jsons(list);
+        }
+        
+        public async Task<JsonResult> GetUserList2(QueryUserModel pageBase)
+        {
+            var list = await _userService.GetUserList2(pageBase);
             return Jsons(list);
         }
 
@@ -105,14 +105,14 @@ namespace Repair.Controllers
 
         #region 修理工列表
 
-        
+
         /// <summary>
         /// 修理工列表
         /// </summary>
         /// <returns></returns>
         public async Task<IActionResult> RepairManList()
         {
-            var comm = await _communityService.FirstOrDefult(p=>p.AdminId == loginDto.CurrentId.Value);
+            var comm = await _communityService.FirstOrDefult(p => p.AdminId == loginDto.CurrentId.Value);
             var model = new QueryRepairManModel();
             if (IsSuper() != 1)
             {
@@ -132,7 +132,7 @@ namespace Repair.Controllers
 
         #region 社区列表
 
-        
+
         /// <summary>
         /// 社区列表
         /// </summary>
@@ -143,19 +143,22 @@ namespace Repair.Controllers
             ViewBag.IsSuper = IsSuper();
             return View();
         }
-        
+
 
         public IActionResult InsertCommunity()
         {
             return View();
         }
 
-        public IActionResult CommunityMan(int commuityId)
+        public IActionResult CommunityMan(int commuityId,int type = 0)
         {
-            ViewBag.SearchModel = new QueryUserModel()
+            var SearchModel = new QueryUserModel();
+            if (type == 1 || type == 4)
             {
-                IsRepair = true
-            };
+                SearchModel.IsRepair = true;
+            }
+
+            ViewBag.SearchModel = SearchModel;
             return View();
         }
 
@@ -169,7 +172,7 @@ namespace Repair.Controllers
             var list = await _communityService.GetList(pageBase);
             return Jsons(list);
         }
-        
+
         public async Task<JsonResult> SetCommuityRepairMan(int commuityId, int userId)
         {
             await _communityService.SetCommuityRepairMan(commuityId, userId);
@@ -212,9 +215,16 @@ namespace Repair.Controllers
 
 
         #endregion
-        public async Task<JsonResult> GetRepairList(PageBase pageBase)
+
+        public IActionResult RepairList()
         {
-            pageBase.Role = GetRole();
+            ViewBag.SearchModel = new QueryRepairListModel();
+            return View();
+        }
+
+        public async Task<JsonResult> GetRepairList(QueryRepairListModel pageBase)
+        {
+            pageBase.AdminId = loginDto.CurrentId;
             var list = await _repairListService.PageRepairList(pageBase);
             return Jsons(list);
         }

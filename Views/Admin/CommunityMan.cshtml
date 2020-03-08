@@ -4,6 +4,7 @@
 
 
 <style>
+
     .fhui-admin-table-container {
         margin-bottom: 20px;
     }
@@ -23,7 +24,7 @@
                     <div is="i-table" height="450" size="small" :data="items" border :columns="tableColumns" v-on:on-selection-change="changeSelection" ref="table">
                     </div>
                     <div class="layui-inline" style="margin-top: 20px;">
-                        <Page :total="totalCount" :current="currPage" :page-size="pageSize"  v-on:on-change="changePage" v-on:on-page-size-change="pageClick" show-elevator show-sizer show-total></Page>
+                        <Page :total="totalCount" :current="currPage" :page-size="pageSize" v-on:on-change="changePage" v-on:on-page-size-change="pageClick" show-elevator show-sizer show-total></Page>
                     </div>
                 </div>
 
@@ -48,7 +49,7 @@
                     searchModel: searchModel,
                     defaultSearch: searchModel,
                     isShowSelect: false,
-                    getlistUrl: "/Admin/GetUserList",
+                    getlistUrl: "/Admin/GetUserList2",
                     pageSize: searchModel.PageSize,
                     currIndex: 0,
                     tableColumns: pageBase.columns
@@ -80,9 +81,16 @@
                                     layer.close(index);;
                                 },500);
                         })
-                        
                     }
                 },
+                paidan(row,repairId){
+                        $.get('/Admin/AppointRepairMan?repairId=' + repairId + "&repairManId=" + row.id,function(result) {
+                                layer.msg(result.message, function () {
+                                    vue.search(vue.currIndex);
+                                    layer.close(index);;
+                                },500);
+                        })
+                }
             },
             created: function () {
 
@@ -118,6 +126,22 @@
                     align: 'center',
                     render: function (h, params) {
                         var hs = [];
+                        var type = '@Context.Request.Query["type"]';
+                        if (type == '4') {
+                            var repairId = '@Context.Request.Query["repairId"]';
+                            hs.push(h('a', {
+                                style: {
+                                    marginRight: '5px',
+                                    cursor: 'pointer',
+                                    textDecoration: "underline"
+                                },
+                                on: {
+                                    click: function () {
+                                        vue.paidan(params.row, repairId)
+                                    }
+                                }
+                            }, "派单"));
+                        } else {
                             hs.push(h('a', {
                                 style: {
                                     marginRight: '5px',
@@ -138,11 +162,12 @@
                                 },
                                 on: {
                                     click: function () {
-                                        vue.pass(params.row, 2)
+                                        vue.pass(params.row)
                                     }
                                 }
                             }, "设为负责人"));
-                            return hs;
+                        }
+                        return hs;
                     }
                 }
             ];

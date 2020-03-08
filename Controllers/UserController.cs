@@ -54,10 +54,21 @@ namespace Repair.Controllers
 
         public IActionResult Register()
         {
+            if (IsLogin())
+            {
+                return Redirect("/User/UserInfo");
+            }
+
             return View();
         }
 
         public async Task<IActionResult> RepairList(int? status)
+        {
+            var model = await _repairListService.GetRepairListByStatus(GetUID(), status);
+            return View(model);
+        }
+
+        public async Task<IActionResult> RepairListAsRepairMan(int? status)
         {
             var model = await _repairListService.GetRepairListByStatus(GetUID(), status);
             return View(model);
@@ -131,6 +142,12 @@ namespace Repair.Controllers
 
             var user = await _userService.GetUserAsync(int.Parse(uid));
             return Success(user);
+        }
+
+        public async Task<JsonResult> UpdateRepairListStatus(int repairListId, int status)
+        {
+            await _repairListService.update(repairListId, (RepairStatusEnum) status);
+            return Success();
         }
 
         public async Task LoginOut()

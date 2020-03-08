@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\main.css.map" />
+    <None Include="wwwroot\css\main.less" />
     <None Include="wwwroot\dist\css\main.css" />
     <None Include="wwwroot\dist\font\iconfont.css" />
     <None Include="wwwroot\dist\font\iconfont.eot" />
@@ -62,6 +64,17 @@
     <None Include="wwwroot\dist\img\ToExplain.png" />
     <None Include="wwwroot\dist\js\knockout-3.4.2.js" />
     <None Include="wwwroot\dist\js\main.js" />
+    <None Include="wwwroot\js\bodyTab.js" />
+    <None Include="wwwroot\js\global.js" />
+    <None Include="wwwroot\js\index.js" />
+    <None Include="wwwroot\js\jquery-1.8.2.min.js" />
+    <None Include="wwwroot\js\jsencrypt.min.js" />
+    <None Include="wwwroot\js\leftNav.js" />
+    <None Include="wwwroot\js\main.js" />
+    <None Include="wwwroot\js\nav.js" />
+    <None Include="wwwroot\layui\lay\modules\colorpicker.js" />
+    <None Include="wwwroot\layui\lay\modules\slider.js" />
+    <None Include="wwwroot\layui\lay\modules\transfer.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,19 +90,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\stringFormat.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.common.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.esm.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.min.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.common.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.esm.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.min.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue_extensions.js" />
   </ItemGroup>
 
 

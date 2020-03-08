@@ -14,7 +14,12 @@
                     <div class="card-header">@item.statusName</div>
                     <div class="card-content">
                         <div class="card-content-inner">@item.Remake。</div>
-                        <div class="card-content-inner">@item.statusName。（@item.CreateTime?.ToString("yyyy-MM-dd hh:mm")）</div>
+                        @if (item.Status != 1)
+                        {
+                            <div class="card-content-inner">修理工：@item.RepairManName（@item.RepairManMobile）</div>
+                        }
+                        <div class="card-content-inner">@item.statusName。（@item.CreateTime?.ToString("yyyy-MM-dd hh:mm")）
+                            </div>
                     </div>
                 </div>
             }

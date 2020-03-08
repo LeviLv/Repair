@@ -93,8 +93,8 @@
     </div>
     <div class="content-block">
         <div class="row">
-            <div class="col-50"><a href="#" class="button button-big button-fill button-danger">取消</a></div>
-            <div class="col-50"><a href="#" class="button button-big button-fill button-success">提交</a></div>
+            <div class="col-50"><a href="/Home/Index" class="button button-big button-fill button-danger">取消</a></div>
+            <div class="col-50" @@click="editUser"><a href="#" class="button button-big button-fill button-success">提交</a></div>
         </div>
     </div>
 </div>
@@ -115,19 +115,19 @@
             methods: {
                 editUser: function () {
                     var user = vue.$data.user;
-                    if (user.name == '') {
+                    if (user.name == null || user.name == '') {
                         $.toast("用户名不能为空");
                         return;
                     }
-                    if (user.homeNum == '') {
+                    if (user.homeNum == null  || user.homeNum == '') {
                         $.toast("门牌号不能为空");
                         return;
                     }
-                    if (user.mobile == '') {
+                    if (user.mobile == null  || user.mobile == '') {
                         $.toast("手机号不能为空");
                         return;
                     }
-                    if (user.homeAddress == '') {
+                    if (user.homeAddress == null  || user.homeAddress == '') {
                         $.toast("详细住址不能为空");
                         return;
                     }

@@ -18,18 +18,6 @@ namespace Repair.Controllers
 
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            var currId = context.HttpContext.Session.Get("currId");
-            var currRole = context.HttpContext.Session.Get("currRole");
-
-            if (currId == null)
-            {
-                context.HttpContext.Response.Redirect("/Admin/Login");
-                return;
-            }
-        }
-
         protected JsonResult Success()
         {
             return Json(Result.Successed);
@@ -59,6 +47,12 @@ namespace Repair.Controllers
         {
             var uid = HttpContext.User.Identity.Name;
             return int.Parse(uid);
+        }
+
+        protected bool IsLogin()
+        {
+            var uid = HttpContext.User.Identity.Name;
+            return !string.IsNullOrWhiteSpace(uid);
         }
     }
 }

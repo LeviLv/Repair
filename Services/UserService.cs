@@ -84,25 +84,43 @@ namespace Repair.Services
 
             if (!string.IsNullOrWhiteSpace(pageBase.mobile))
             {
-                func.And(p => p.Mobile == pageBase.mobile);
+                func = func.And(p => p.Mobile == pageBase.mobile);
             }
 
             if (pageBase.IsRepair.HasValue)
             {
-                func.And(p => p.IsRepairMan == pageBase.IsRepair);
+                func = func.And(p => p.IsRepairMan == pageBase.IsRepair);
             }
 
             var list = await _repository.PageListAsync(func.Compile(), p => p.Id, pageBase);
             return list;
         }
 
+        public async Task<QueryResult<User>> GetUserList2(QueryUserModel pageBase)
+        {
+            Expression<Func<User, bool>> func = p => true;
+
+            if (!string.IsNullOrWhiteSpace(pageBase.mobile))
+            {
+                func = func.And(p => p.Mobile == pageBase.mobile);
+            }
+
+            if (pageBase.IsRepair.HasValue)
+            {
+                func = func.And(p => p.IsRepairMan == pageBase.IsRepair);
+            }
+
+            var list = await _repository.PageListAsync(func.Compile(), p => p.Id, pageBase);
+            return list;
+        }
+        
         public async Task<QueryResult<RepairManDTO>> GetRepairManList(QueryUserModel pageBase)
         {
             var community = await _communityService.GetAllAsync();
             Expression<Func<User, bool>> func = p => p.IsRepairMan;
             if (!string.IsNullOrWhiteSpace(pageBase.mobile))
             {
-                func.And(p => p.Mobile == pageBase.mobile);
+                func = func.And(p => p.Mobile == pageBase.mobile);
             }
 
             var list = await _repository.PageListAsync(func.Compile(), p => p.Id, pageBase);
@@ -121,7 +139,7 @@ namespace Repair.Services
 
         public async Task<QueryResult<RepairManDTO>> GetRepairManList(QueryRepairManModel pageBase)
         {
-            var sql = "select u.* from Community c join Users u on c.RepairManId = u.Id where 1=1 ";
+            var sql = "select u.* from Community c right join Users u on c.RepairManId = u.Id where u.IsAdmin = 0 and u.IsRepairMan = 1 ";
             if (!string.IsNullOrWhiteSpace(pageBase.mobile))
             {
                 sql += $" and u.mobile = '{pageBase.mobile}' ";
