@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<div class="layui-colla-item-detail" id="detail" style="margin-left:0px">
+    <div class="layui-colla-content layui-show">
+        <div class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-mid">小区名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" v-model="name" class="layui-input layui-unselect" />
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-inline">
+                        <input type="button" class="layui-btn  layui-btn-small " v-on:click="update" value="确定" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var model = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Model));
+        var vue = new Vue({
+            el: '#detail',
+            data: function () {
+                return {
+                    name: '',
+                    parent: {}
+                }
+            },
+            methods: {
+                update() {
+                    var url = '/Admin/AddCommunity?name=' + vue.name;
+                    var _data = vue.model;
+                    $.post(url,null, function (msg) {
+                        if (msg.code == 0) {
+                            layer.msg(msg.message, function () { setTimeout(function () { parent.layer.closeAll(); }, 100) });
+                        } else {
+                            layer.msg("失败");
+                        }
+                    })
+                }
+            },
+            created: function () {
+                
+            }
+        });
+
+        layui.use(['upload', 'layer', 'form'], function () {
+            var $ = layui.jquery,
+                layer = layui.layer,
+                form = layui.form,
+                upload = layui.upload;
+            var index1;
+            var index2;
+            upload.render({ //允许上传的文件后缀
+                elem: '#test1'
+                , url: '/Upload/Upload'
+                , multiple: true
+                , accept: 'file' //普通文件
+                , exts: 'bmp|jpg|png|tiff|gif' //只允许上传图片
+                , before: function (obj) {
+                    //返回的参数item，即为当前的input DOM对象
+                    index1 = layer.load(0, {
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+                    });
+                }
+                , done: function (res) {
+                    console.log(res);
+                    layer.close(index1);
+                    var cnt = 1;
+                    if (res.code === 0) {
+                        layer.msg('图片上传成功！');
+                        vue.model.Url = res.data;
+                    }
+                }
+            });
+        });
+    </script>
+}

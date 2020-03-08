@@ -1,0 +1,257 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+
+<style>
+    .fhui-admin-table-container {
+        margin-bottom: 20px;
+    }
+
+    .page-layui {
+        float: right;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="admin-main" v-cloak id="divAdmin">
+    <div class="layui-collapse">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">查询条件</h2>
+            <div class="layui-colla-content layui-show">
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-mid">手机号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" v-model="searchModel.mobile" class="layui-input layui-unselect" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-inline">
+                                <input type="button" class="layui-btn  layui-btn-small " v-on:click="search(1)" value="搜索" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="layui-collapse">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">查询结果</h2>
+            <div class="layui-colla-content layui-show">
+                <div class="fhui-admin-table-container">
+                    <div is="i-table" height="450" size="small" :data="items" border :columns="tableColumns" v-on:on-selection-change="changeSelection" ref="table">
+                    </div>
+                    <div class="layui-inline" style="margin-top: 20px;">
+                        <Page :total="totalCount" :current="currPage" :page-size="pageSize"  v-on:on-change="changePage" v-on:on-page-size-change="pageClick" show-elevator show-sizer show-total></Page>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        var pageBase = new PageBase();
+        var searchModel = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.SearchModel))';
+        var vue = new vueTableBase({
+            el: '#divAdmin',
+            data: function () {
+                return {
+                    sendBeginTime: '',
+                    sendEndTime: '',
+                    createBeginTime: '',
+                    createEndTime:'',
+                    searchModel: searchModel,
+                    defaultSearch: searchModel,
+                    isShowSelect: false,
+                    getlistUrl: "/Admin/GetRepairManList",
+                    pageSize: searchModel.PageSize,
+                    currIndex: 0,
+                    tableColumns: pageBase.columns
+                };
+            },
+            methods: {
+                searchExt() {
+                    var keys = ["sendBeginTime", "sendEndTime", "createBeginTime", "createEndTime"];
+                    for (var i = 0; i < keys.length; i++) {
+                        var item = keys[i];
+                        if (this.searchModel[item]) {
+                            this.searchModel[item] = this.searchModel[item].format('yyyy-MM-dd hh:mm');
+                        }
+                    }
+                },
+                pass(row, status) {
+                    if (status == 1) { //通过
+                        $.get('/Admin/MakeRepairMan?userId=' + row.id + "&communityIds=" , function (msg) {
+                            layer.msg(msg.message, function () {
+                                vue.search(vue.currIndex);
+                            },500);
+                        })
+                    } else {
+                            $.get('/Admin/CancleRepairMan?userId=' + row.id , function (msg) {
+                                layer.msg(msg.message, function () {
+                                    vue.search(vue.currIndex);
+                                    layer.close(index);;
+                                },500);
+                            })
+                    }
+                },
+            },
+            created: function () {
+
+            }
+        });
+
+
+        function PageBase() {
+            this.columns = [
+                {
+                    title: '用户名',
+                    key: 'name',
+                    fixed: 'left',
+                    width: 150,
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.name;
+                    }
+                },
+                {
+                    title: '角色',
+                    key: 'mobile',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.isRepairMan ? "修理工":"用户";
+                    }
+                },
+                {
+                    title: '手机号',
+                    key: 'mobile',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.mobile;
+                    }
+                },
+                
+                {
+                    title: '小区',
+                    key: 'homeNum',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.commonityName;
+                    }
+                },
+                {
+                    title: '住址',
+                    key: 'homeNum',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.homeAddress;
+                    }
+                },
+                {
+                    title: '门牌号',
+                    key: 'homeNum',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.homeNum;
+                    }
+                },
+                {
+                    title: '注册时间',
+                    key: 'CardID',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.createTime.replace('T',' ');
+                    }
+                },
+                // {
+                //     title: '修改',
+                //     key: 'action',
+                //     fixed: "right",
+                //     width: 120,
+                //     align: 'center',
+                //     render: function (h, params) {
+                //         var hs = [];
+                //         if (params.row.isRepairMan) {
+                //             hs.push(h('a', {
+                //                 style: {
+                //                     marginRight: '5px',
+                //                     cursor: 'pointer',
+                //                     textDecoration: "underline"
+                //                 },
+                //                 on: {
+                //                     click: function () {
+                //                         vue.pass(params.row, 2)
+                //                     }
+                //                 }
+                //             }, "取消修理工资质"));
+                //         } else {
+                //             hs.push(h('a', {
+                //                 style: {
+                //                     marginRight: '5px',
+                //                     cursor: 'pointer',
+                //                     textDecoration: "underline"
+                //                 },
+                //                 on: {
+                //                     click: function () {
+                //                         vue.pass(params.row, 1)
+                //                     }
+                //                 }
+                //             }, "设为修理工"));
+                //         }
+                //         return hs;
+                //     }
+                // }
+            ];
+        }
+
+        layui.use(['layer', 'form', 'upload', 'laypage', 'element', 'laydate'], function () {
+            var element = layui.element;
+            var form = layui.form
+                , laypage = layui.laypage, layer = layui.layer, upload = layui.upload;
+            var index = -1;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#sendTime',
+                type: 'datetime',
+                done: function (value, date, endDate) {
+                    vue.$data.sendTime = value;
+                }
+            });
+            upload.render({ //允许上传的文件后缀
+                elem: '#test1'
+                , url: '/NewPerson/Message/BatchImport'
+                , accept: 'file' //普通文件
+                , exts: 'xlsx|xls' //只允许上传Excel
+                , before: function (input) {
+                    //返回的参数item，即为当前的input DOM对象
+                    index = layer.load(0, {
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+
+                    });
+                }
+                , done: function (res) {
+                    layer.close(index);
+                    if (res.state == false) {
+                        layer.alert(res.msg);
+                        return;
+                    }
+                    vue.$data.fileMsg = res.fileName;
+                    vue.$data.fullName = res.fullName;
+                    vue.$data.hasFile = true;
+                    vue.search();
+                }
+            });
+        });
+
+
+    </script>
+}

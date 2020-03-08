@@ -1,0 +1,108 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<header class="bar bar-nav">
+    <h1 class="title">我要报修</h1>
+</header>
+<div class="content" id="userinfo">
+    <div class="list-block">
+        <ul>
+            <!-- Text inputs -->
+            <li>
+                <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title label">姓名</div>
+                        <div class="item-input">
+                            <input type="text" placeholder="姓名" v-model="user.name" disabled="disabled">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title label">小区</div>
+                        <div class="item-input">
+                            <select v-model="user.communityId" disabled="disabled">
+                                <option v-for="item in community" :value="item.Id">{{item.Name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-name"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title label">门牌号</div>
+                        <div class="item-input">
+                            <input type="text" placeholder="门牌号" v-model="user.homeNum" disabled="disabled">
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <!-- Switch (Checkbox) -->
+            <li class="align-top">
+                <div class="item-content">
+                    <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                    <div class="item-inner">
+                        <div class="item-title label">报修内容</div>
+                        <div class="item-input">
+                            <textarea v-model="repairInfo"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="content-block">
+        <div class="row">
+            <div style="margin-left:14px;"><a href="#" @@click="editUser" class="button button-big button-fill button-success">提交</a></div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var vue = new Vue({
+            el: "#userinfo",
+            data: function () {
+                return {
+                    userId: @ViewBag.UserId,
+                    user: {},
+                    community: [],
+                    repairInfo: ''
+                }
+            },
+            methods: {
+                editUser: function () {
+                    if (vue.$data.repairInfo == '') {
+                        $.toast("报修内容不能为空");
+                        return;
+                    }
+
+                    var url = '/User/InsertRepair';
+                    var _data = {
+                        remake: this.$data.repairInfo
+                    };
+                    post(url, JSON.stringify(_data), function (result) {
+                        $.alert("报修成功，请等待系统派单", "通知", function (result) {
+                            location.href = "/Home/Index";
+                        })
+                    })
+                }
+            },
+            created: function () {
+                var _this = this;
+                $.get("/User/GetUser?id=" + _this.$data.userId, function (result) {
+                    vue.user = result.data;
+                });
+
+                this.$data.community = @Html.Raw(ViewBag.Community);
+            }
+        })
+    </script>
+}

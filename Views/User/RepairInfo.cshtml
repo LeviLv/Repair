@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "_Layout";
+}
+@model IList<Repair.Entitys.RepairListInfoDTO>
+
+    <div class="content" id="detail">
+        @if (Model.Count <= 0)
+        {
+            <p style="text-align:center">暂无信息</p>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="card">
+                    <div class="card-header">@item.StatusName</div>
+                    <div class="card-content">
+                        <div class="card-content-inner">
+                            @if (string.IsNullOrWhiteSpace(item.Remake))
+                            {
+                                @item.StatusName;
+                            }
+                            else
+                            {
+                                @item.Remake;
+                            }
+                        </div>
+                        <div class="card-content-inner">@item.StatusName。（@item.CreateTime.ToString("yyyy-MM-dd hh:mm")）</div>
+                    </div>
+                </div>
+            }
+        }
+    </div>

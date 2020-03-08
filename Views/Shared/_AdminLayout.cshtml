@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="~/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="~/layui/css/font_eolqem241z66flxr.css" media="all" />
+    <link href="~/layui/css/main.css" rel="stylesheet" />
+    <link href="~/lib/iview/styles/iview.css" rel="stylesheet" />
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        .layui-form select {
+            display: block;
+            width: 100%;
+            padding-left: 10px;
+            height: 38px;
+            width: 190px;
+            border-radius: 0 2px 2px 0;
+            border: 1px solid #e6e6e6;
+        }
+
+        /*.layui-form-pane .layui-form-label {
+            width: 150px;1
+        }*/
+
+        .layui-select-title {
+            display: none;
+        }
+
+        .fr {
+            margin-top: 10px;
+            float: right;
+        }
+
+        .user-photo {
+            height: 130px !important;
+        }
+
+        .layui-colla-item-detail {
+            float: left;
+            margin-left: 250px;
+        }
+    </style>
+</head>
+<body class="childrenBody">
+    @RenderBody()
+</body>
+</html>
+<script src="http://cdn.bootcss.com/jquery/1.12.3/jquery.min.js"></script>
+<script src="~/js/layer.js"></script>
+<script src="~/lib/layui/layui.js"></script>
+<script type="text/javascript" src="~/js/nav.js"></script>
+<script type="text/javascript" src="~/js/leftNav.js"></script>
+<script type="text/javascript" src="~/js/index.js"></script>
+<script src="~/lib/vuejs/vue.js"></script>
+<script src="~/lib/vuejs/vue_extensions.js"></script>
+<script src="~/lib/iview/iview.js"></script>
+<script src="~/lib/vuejs/stringFormat.js"></script>
+<script>
+    var curr = 1;
+    layui.use(['layer', 'laydate', 'laypage'], function () {
+        var laypage = layui.laypage;
+        var $ = layui.jquery, layer = layui.layer;
+        laypage.render({
+            elem: 'page'
+            , layout: ['prev', 'next', 'count', 'skip']
+            , limits: [10, 20, 30]
+            , count: 50 //数据总数，从服务端得到
+            , jump: function (obj, first) {
+                curr = obj.curr;
+                if (!first) {
+                    //第一次执行
+                }
+            }
+        });
+    });
+    
+</script>
+@RenderSection("scripts", required: false)

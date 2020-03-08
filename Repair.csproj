@@ -1,0 +1,97 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\dist\css\main.css" />
+    <None Include="wwwroot\dist\font\iconfont.css" />
+    <None Include="wwwroot\dist\font\iconfont.eot" />
+    <None Include="wwwroot\dist\font\iconfont.svg" />
+    <None Include="wwwroot\dist\font\iconfont.ttf" />
+    <None Include="wwwroot\dist\font\iconfont.woff" />
+    <None Include="wwwroot\dist\img\2 - 副本.jpg" />
+    <None Include="wwwroot\dist\img\2.jpg" />
+    <None Include="wwwroot\dist\img\2x - 副本\banner%402x.png" />
+    <None Include="wwwroot\dist\img\2x - 副本\extension-bg%402x.png" />
+    <None Include="wwwroot\dist\img\2x - 副本\logo%402x.png" />
+    <None Include="wwwroot\dist\img\2x - 副本\nodata%402x.png" />
+    <None Include="wwwroot\dist\img\2x - 副本\recommender%402x.png" />
+    <None Include="wwwroot\dist\img\2x - 副本\title_1%402x.png" />
+    <None Include="wwwroot\dist\img\2x - 副本\title_2%402x.png" />
+    <None Include="wwwroot\dist\img\2x\1%402x.png" />
+    <None Include="wwwroot\dist\img\2x\2%402x.png" />
+    <None Include="wwwroot\dist\img\2x\3%402x.png" />
+    <None Include="wwwroot\dist\img\2x\banner%402x.png" />
+    <None Include="wwwroot\dist\img\2x\extension-bg%402x.png" />
+    <None Include="wwwroot\dist\img\2x\logo%402x.png" />
+    <None Include="wwwroot\dist\img\2x\man%402x.png" />
+    <None Include="wwwroot\dist\img\2x\nodata%402x.png" />
+    <None Include="wwwroot\dist\img\2x\recommender%402x.png" />
+    <None Include="wwwroot\dist\img\2x\title_1%402x.png" />
+    <None Include="wwwroot\dist\img\2x\title_2%402x.png" />
+    <None Include="wwwroot\dist\img\2x\woman%402x.png" />
+    <None Include="wwwroot\dist\img\3 - 副本.jpg" />
+    <None Include="wwwroot\dist\img\3.jpg" />
+    <None Include="wwwroot\dist\img\3x - 副本\banner%403x.png" />
+    <None Include="wwwroot\dist\img\3x - 副本\extension-bg%403x.png" />
+    <None Include="wwwroot\dist\img\3x - 副本\logo%403x.png" />
+    <None Include="wwwroot\dist\img\3x - 副本\recommender%403x.png" />
+    <None Include="wwwroot\dist\img\3x - 副本\title_1%403x.png" />
+    <None Include="wwwroot\dist\img\3x - 副本\title_2%403x.png" />
+    <None Include="wwwroot\dist\img\3x\1%403x.png" />
+    <None Include="wwwroot\dist\img\3x\2%403x.png" />
+    <None Include="wwwroot\dist\img\3x\3%403x.png" />
+    <None Include="wwwroot\dist\img\3x\banner%403x.png" />
+    <None Include="wwwroot\dist\img\3x\extension-bg%403x.png" />
+    <None Include="wwwroot\dist\img\3x\logo%403x.png" />
+    <None Include="wwwroot\dist\img\3x\man%403x.png" />
+    <None Include="wwwroot\dist\img\3x\recommender%403x.png" />
+    <None Include="wwwroot\dist\img\3x\title_1%403x.png" />
+    <None Include="wwwroot\dist\img\3x\title_2%403x.png" />
+    <None Include="wwwroot\dist\img\3x\woman%403x.png" />
+    <None Include="wwwroot\dist\img\bind_success - 副本.png" />
+    <None Include="wwwroot\dist\img\bind_success.png" />
+    <None Include="wwwroot\dist\img\bottom_img - 副本.png" />
+    <None Include="wwwroot\dist\img\bottom_img.png" />
+    <None Include="wwwroot\dist\img\give.png" />
+    <None Include="wwwroot\dist\img\logo - 副本.png" />
+    <None Include="wwwroot\dist\img\logo.png" />
+    <None Include="wwwroot\dist\img\modal.png" />
+    <None Include="wwwroot\dist\img\ToExplain.png" />
+    <None Include="wwwroot\dist\js\knockout-3.4.2.js" />
+    <None Include="wwwroot\dist\js\main.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="aliyun-net-sdk-core" Version="1.2.0" />
+    <PackageReference Include="aliyun-net-sdk-dysmsapi" Version="1.0.0" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Dapper" Version="2.0.30" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\stringFormat.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.common.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.esm.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.common.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.esm.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue.runtime.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\vuejs\vue_extensions.js" />
+  </ItemGroup>
+
+
+
+</Project>

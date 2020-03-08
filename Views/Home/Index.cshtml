@@ -1,0 +1,163 @@
+﻿<div class="content native-scroll" id="detail">
+    <div class="content-inner">
+
+        <div class="center-bg">
+            <!--个人信息 start-->
+
+            <div class="center-header">
+                <div class="center-box">
+                    <img class="center-head" src="~/dist/img/2.jpg" alt="">
+                </div>
+                <div class="center-info">
+                    <div class="center-info-left">
+                        <div class="center-info-lefts">
+                            <div class="center-info-name">{{user.Name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--个人信息 end-->
+            <!--红包start-->
+            <div class="center-red-box">
+                <a class="center-red" href="/User/RepairList">
+                    <p>@ViewBag.Status1</p>
+                    <p>全部</p>
+                </a>
+                <div class="center-line"></div>
+
+                <a class="center-red" href="/User/RepairList?status=2">
+                    <p>@ViewBag.Status2</p>
+                    <p>已接单</p>
+                </a>
+                <div class="center-line"></div>
+
+                <a class="center-red" href="/User/RepairList?status=4">
+                    <p>@ViewBag.Status3</p>
+                    <p>待评价</p>
+                </a>
+                <div class="center-line"></div>
+
+                <a class="center-red" href="/User/RepairList?status=5">
+                    <p>@ViewBag.Status4</p>
+                    <p>已评价</p>
+                </a>
+            </div>
+            <!--红包end-->
+            <!--列表start-->
+            <div class="list-block center-list" style="margin-top:0rem">
+                <ul>
+                    <li>
+                        <a href="/User/UserInfo" class="item-link item-content">
+                            <div class="item-media">
+                                <i class="icon iconfont icon-gerenxinxi center-gerenxinxi"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">个人信息</div>
+                            </div>
+                        </a>
+                    </li>
+                    @*<li>
+            <a href="/RedPacket/MyRedPacket" class="item-link item-content">
+                <div class="item-media">
+                    <i class="icon iconfont icon-hongbao1 center-hongbao1"></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title">我的红包</div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="/Statistics/index" class="item-link item-content">
+                <div class="item-media">
+                    <i class="icon iconfont icon-paiming center-paiming"></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title">游戏排名</div>
+                </div>
+            </a>
+        </li>*@
+
+                    <li>
+                        <a href="/User/RepairList?status=3" class="item-link item-content">
+                            <div class="item-media">
+                                <i class="icon iconfont icon-fenxiang1 center-fenxiang1"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">处理中</div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/User/NewRepair" class="item-link item-content">
+                            <div class="item-media">
+                                <i class="icon iconfont icon-fenxiang1 center-fenxiang1"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">我要报修</div>
+                            </div>
+                        </a>
+                    </li>
+                    @*<li>
+            <a href="/Account/Welfare_Ranking" class="item-link item-content">
+                <div class="item-media">
+                    <i class="icon iconfont icon-paiming center-paiming"></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title">红包排名</div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="/RedPacket/RedPAckRian" class="item-link item-content">
+                <div class="item-media">
+                    <i class="icon iconfont icon-ai-hongbao center-hongbao1"></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title">享红包雨</div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a href="/Account/Security" class="item-link item-content">
+                <div class="item-media">
+                    <i class="icon iconfont icon-anquanzhongxin center-anquan"></i>
+                </div>
+                <div class="item-inner">
+                    <div class="item-title">安全中心</div>
+                </div>
+            </a>
+        </li>*@
+                    <li>
+                        <a href="/Home/News" class="item-link item-content">
+                            <div class="item-media">
+                                <i class="icon iconfont icon-anquanzhongxin center-anquan"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">公告</div>
+                            </div>
+                        </a>
+                    </li>
+
+
+                </ul>
+            </div>
+
+            <!--列表end-->
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+         var vue = new Vue({
+             el: '#detail',
+             data: {
+                 user: {}
+             },
+             created: function() {
+                 this.$data.user = @Html.Raw(ViewBag.User);
+             }
+         })
+     </script>
+}

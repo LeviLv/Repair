@@ -1,0 +1,229 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+
+<style>
+    .fhui-admin-table-container {
+        margin-bottom: 20px;
+    }
+
+    .page-layui {
+        float: right;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="admin-main" v-cloak id="divAdmin">
+    <div class="layui-collapse">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">查询条件</h2>
+            <div class="layui-colla-content layui-show">
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-mid">手机号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" v-model="searchModel.name" class="layui-input layui-unselect" />
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-inline">
+                                <input type="button" class="layui-btn  layui-btn-small " v-on:click="search(1)" value="搜索" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-inline">
+                                <input type="button" class="layui-btn  layui-btn-small " v-on:click="insert()" value="新增" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="layui-collapse">
+        <div class="layui-colla-item">
+            <h2 class="layui-colla-title">查询结果</h2>
+            <div class="layui-colla-content layui-show">
+                <div class="fhui-admin-table-container">
+                    <div is="i-table" height="450" size="small" :data="items" border :columns="tableColumns" v-on:on-selection-change="changeSelection" ref="table">
+                    </div>
+                    <div class="layui-inline" style="margin-top: 20px;">
+                        <Page :total="totalCount" :current="currPage" :page-size="pageSize"  v-on:on-change="changePage" v-on:on-page-size-change="pageClick" show-elevator show-sizer show-total></Page>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        var pageBase = new PageBase();
+        var searchModel = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.SearchModel))';
+        var vue = new vueTableBase({
+            el: '#divAdmin',
+            data: function () {
+                return {
+                    sendBeginTime: '',
+                    sendEndTime: '',
+                    createBeginTime: '',
+                    createEndTime:'',
+                    searchModel: searchModel,
+                    defaultSearch: searchModel,
+                    isShowSelect: false,
+                    getlistUrl: "/Admin/GetCommunityList",
+                    pageSize: searchModel.PageSize,
+                    currIndex: 0,
+                    tableColumns: pageBase.columns
+                };
+            },
+            methods: {
+                searchExt() {
+                    var keys = ["sendBeginTime", "sendEndTime", "createBeginTime", "createEndTime"];
+                    for (var i = 0; i < keys.length; i++) {
+                        var item = keys[i];
+                        if (this.searchModel[item]) {
+                            this.searchModel[item] = this.searchModel[item].format('yyyy-MM-dd hh:mm');
+                        }
+                    }
+                },
+                pass(row, status) {
+                    this.openIframe('设置修理工', "/Admin/CommunityMan?commuityId=" + row.id, ["1200px", "600px"], function () { vue.search(vue.currPage); }, parent.layer);
+                },
+                setAdmin(row, status) {
+                    this.openIframe('设置负责人', "/Admin/CommunityMan?commuityId=" + row.id, ["1200px", "600px"], function () { vue.search(vue.currPage); }, parent.layer);
+                },
+                insert(){
+                    this.openIframe('新增社区', "/Admin/InsertCommunity", ["300px", "300px"], function () { vue.search(1); }, parent.layer);
+                }
+            },
+            created: function () {
+
+            }
+        });
+
+
+        function PageBase() {
+            this.columns = [
+                {
+                    title: 'Id',
+                    key: 'name',
+                    fixed: 'left',
+                    width: 150,
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.id;
+                    }
+                },
+                {
+                    title: '小区名',
+                    key: 'mobile',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.name;
+                    }
+                },
+                {
+                    title: '区域负责人',
+                    key: 'homeNum',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.adminName;
+                    }
+                },
+                {
+                    title: '负责修理工',
+                    key: 'homeNum',
+                    align: 'center',
+                    render: function (h, par) {
+                        return par.row.repairManName;
+                    }
+                },
+                {
+                    title: '修改',
+                    key: 'action',
+                    fixed: "right",
+                    width: 120,
+                    align: 'center',
+                    render: function (h, params) {
+                        var hs = [];
+                        if (@ViewBag.IsSuper == 1){
+                            hs.push(h('a', {
+                                style: {
+                                    marginRight: '5px',
+                                    cursor: 'pointer',
+                                    textDecoration: "underline"
+                                },
+                                on: {
+                                    click: function () {
+                                        vue.setAdmin(params.row, 1)
+                                    }
+                                }
+                            }, "设置新负责人"));
+                        }
+                            hs.push(h('a', {
+                                style: {
+                                    marginRight: '5px',
+                                    cursor: 'pointer',
+                                    textDecoration: "underline"
+                                },
+                                on: {
+                                    click: function () {
+                                        vue.pass(params.row, 1)
+                                    }
+                                }
+                            }, "设置新修理工"));
+                        return hs;
+                    }
+                }
+            ];
+        }
+
+        layui.use(['layer', 'form', 'upload', 'laypage', 'element', 'laydate'], function () {
+            var element = layui.element;
+            var form = layui.form
+                , laypage = layui.laypage, layer = layui.layer, upload = layui.upload;
+            var index = -1;
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#sendTime',
+                type: 'datetime',
+                done: function (value, date, endDate) {
+                    vue.$data.sendTime = value;
+                }
+            });
+            upload.render({ //允许上传的文件后缀
+                elem: '#test1'
+                , url: '/NewPerson/Message/BatchImport'
+                , accept: 'file' //普通文件
+                , exts: 'xlsx|xls' //只允许上传Excel
+                , before: function (input) {
+                    //返回的参数item，即为当前的input DOM对象
+                    index = layer.load(0, {
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
+
+                    });
+                }
+                , done: function (res) {
+                    layer.close(index);
+                    if (res.state == false) {
+                        layer.alert(res.msg);
+                        return;
+                    }
+                    vue.$data.fileMsg = res.fileName;
+                    vue.$data.fullName = res.fullName;
+                    vue.$data.hasFile = true;
+                    vue.search();
+                }
+            });
+        });
+
+
+    </script>
+}
