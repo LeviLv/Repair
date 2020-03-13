@@ -17,7 +17,8 @@
                                 <input type="text" v-model="mobile" placeholder="手机号">
                             </div>
                             <p class="register-code">
-                                <a href="javascript:;" class="button button-fill button-dark">获取验证码</a>
+                                <a v-show="!show" href="javascript:;" class="button button-fill button-dark" @@click="getCode">获取验证码</a>
+                                <a v-show="show" href="javascript:;" class="button button-fill button-dark">{{count}} 秒</a>
                             </p>
                         </div>
                     </div>
@@ -53,6 +54,9 @@
             data: {
                 mobile: '',
                 num: null,
+                show: false,
+                count:60,
+                timers: null,
             },
             methods: {
                 register: function () {
@@ -64,7 +68,28 @@
                     post(url, JSON.stringify(data), function (result) {
                         if (result.code == 0) {
                             location.href = '/Home/Index';
+                        }else {
+                            $.toast("验证码错误");
                         }
+                    })
+                },
+                getCode:function(){
+                    vue.$data.count = 60;
+                    var mobile = this.$data.mobile;
+                    var url = "/User/GetSMSCode?mobile=" + mobile;
+                    $.get(url,function(result) {
+                        if (result.code == 0){
+                            vue.$data.show = true;
+                            vue.$data.timers = setInterval(()=>{
+                                if(vue.$data.count > 0 && vue.$data.count <= 60){
+                                    vue.$data.count--;
+                                }else{
+                                    vue.$data.show = false;
+                                    vue.$data.count = 60;
+                                    clearInterval(vue.$data.timers);
+                                }
+                            },1000)
+                        }  
                     })
                 }
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,9 @@ using Repair.Services;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
+using Repair.SMS;
+using JsonReader = Aliyun.Acs.Core.Reader.JsonReader;
 
 namespace Repair.Controllers
 {
@@ -24,13 +28,17 @@ namespace Repair.Controllers
 
         private readonly RepairListInfoService _repairListInfoService;
 
+        private readonly IMemoryCache _memoryCache;
+
         public UserController(UserService userService, CommunityService communityService,
-            RepairListService repairListService, RepairListInfoService repairListInfoService)
+            RepairListService repairListService, RepairListInfoService repairListInfoService,
+            IMemoryCache memoryCache)
         {
             _userService = userService;
             _communityService = communityService;
             _repairListService = repairListService;
             _repairListInfoService = repairListInfoService;
+            _memoryCache = memoryCache;
         }
 
         public IActionResult Index()
@@ -60,6 +68,15 @@ namespace Repair.Controllers
             }
 
             return View();
+        }
+
+        public JsonResult GetSMSCode(string mobile)
+        {
+            var rd = new Random();
+            int i = rd.Next(100000,999999);
+            SmsHelper.SendAcs(mobile,new { code = i });
+            _memoryCache.Set(mobile, i, DateTimeOffset.UtcNow.AddSeconds(60));
+            return Success();
         }
 
         public async Task<IActionResult> RepairList(int? status)
@@ -92,6 +109,13 @@ namespace Repair.Controllers
         [HttpPost]
         public async Task<JsonResult> Register([FromBody] UserRegisterDto dto)
         {
+            var mobile = dto.mobile;
+            var cacheCode = _memoryCache.Get<int>(mobile);
+            if (cacheCode != dto.num)
+            {
+                return Fail("验证码错误");
+            }
+            
             var user = await _userService.GetUserByMobile(dto.mobile);
             var u = new UserDTO();
             if (user == null)

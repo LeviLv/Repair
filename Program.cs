@@ -14,7 +14,7 @@ namespace Repair
     {
         public static void Main(string[] args)
         {
-            //SmsHelper.SendAcs("15591008934", new { code = 123 });
+            SmsHelper.SendAcs("15591008934", new { code = 123 });
             CreateHostBuilder(args).Build().Run();
         }
 
