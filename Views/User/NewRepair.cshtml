@@ -112,9 +112,10 @@
                     })
                 },
                 upload: function (event) {
+                    $.showPreloader();
                     var file = event.target.files;
-      var formData = new FormData();
-      formData.append('formFile', file[0]);
+                    var formData = new FormData();
+                    formData.append('formFile', file[0]);
     $.ajax({
         url:'/User/Upload',
         dataType:'json',
@@ -131,7 +132,11 @@
         error:function(response){
             console.log(response);
         }
+        
     });
+                        setTimeout(function () {
+                            $.hidePreloader();
+                        }, 4000);
                 }
             },
             created: function () {

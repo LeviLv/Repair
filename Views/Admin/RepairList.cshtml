@@ -173,6 +173,32 @@
                     }
                 },
                 {
+                    title: '图片',
+                    key: 'homeNum',
+                    align: 'center',
+                    render: function (h, par) {
+                        if (par.row.img == '' || par.row.img == null){
+                            return null;
+                        }
+                         return h('img', {
+                              style: {//设置样式
+                                  width: '100px',
+                                  'height': '80px',
+                                  'border-radius': '5%'
+                              },
+                              attrs: {//设置属性
+                                  src: par.row.img,
+                              },
+                              on:{
+                                  click:()=>{
+                                      var url = "https://www.chak.ltd" + par.row.img;
+                                      window.open(url)
+                                  }
+                              }
+                          });
+                    }
+                },
+                {
                     title: '负责修理工',
                     key: 'homeNum',
                     align: 'center',
