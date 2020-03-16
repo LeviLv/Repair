@@ -24,6 +24,9 @@ namespace Repair.EntityFramework.Domain
 
         [MaxLength(200)]
         public string Remake { get; set; }
+        
+        [MaxLength(200)]
+        public string Img { get; set; }
 
         public DateTime? CreateTime { get; set; } = DateTime.Now;
 

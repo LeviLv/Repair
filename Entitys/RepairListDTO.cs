@@ -29,6 +29,8 @@ namespace Repair.Entitys
         public string CommunityName { get; set; }
 
         public string Remake { get; set; }
+        
+        public string Img { get; set; }
 
         public DateTime? CreateTime { get; set; }
 

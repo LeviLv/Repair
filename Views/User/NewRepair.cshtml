@@ -61,9 +61,11 @@
                 <div class="item-content">
                     <div class="item-media"><i class="icon icon-form-comment"></i></div>
                     <div class="item-inner">
-                        <div class="item-title label">图片</div>
+                        <div class="item-title label">报修图片</div>
                         <div class="item-input">
-                            <img style="width:20%;margin-bottom:15px" src="~/dist/img/taking.png" v-on:click="upload" />
+                            <img v-if="imgPath != ''" style="width:50%;margin-bottom:15px;margin-top: 10px" v-bind:src="imgPath" onclick="addImg()"/>
+                            <img v-if="imgPath == ''" style="width:20%;margin-bottom:15px;margin-top: 10px" src="~/dist/img/taking.png" onclick="addImg()"/>
+                            <input type="file" id="image" name="image" @@change="upload" style="display:none"/>
                         </div>
                     </div>
                 </div>
@@ -86,7 +88,8 @@
                     userId: @ViewBag.UserId,
                     user: {},
                     community: [],
-                    repairInfo: ''
+                    repairInfo: '',
+                    imgPath:''
                 }
             },
             methods: {
@@ -99,7 +102,8 @@
                     var url = '/User/InsertRepair';
                     var _data = {
                         remake: this.$data.repairInfo,
-                        communityId : this.$data.user.communityId
+                        communityId : this.$data.user.communityId,
+                        img: this.$data.imgPath
                     };
                     post(url, JSON.stringify(_data), function (result) {
                         $.alert("报修成功，请等待系统派单", "通知", function (result) {
@@ -107,8 +111,27 @@
                         })
                     })
                 },
-                upload: function () {
-                    console.log(1)
+                upload: function (event) {
+                    var file = event.target.files;
+      var formData = new FormData();
+      formData.append('formFile', file[0]);
+    $.ajax({
+        url:'/User/Upload',
+        dataType:'json',
+        type:'POST',
+        async: false,
+        data: formData,
+        processData : false, // 使数据不做处理
+        contentType : false, // 不要设置Content-Type请求头
+        success: function(data){
+            if(data.code == 0){
+                vue.$data.imgPath = data.data;
+            }
+        },
+        error:function(response){
+            console.log(response);
+        }
+    });
                 }
             },
             created: function () {
@@ -119,6 +142,10 @@
 
                 this.$data.community = @Html.Raw(ViewBag.Community);
             }
-        })
+        });
+        
+        function addImg(){
+            document.getElementById("image").click();
+        }
     </script>
 }

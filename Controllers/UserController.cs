@@ -10,8 +10,10 @@ using Repair.Entitys;
 using Repair.Models;
 using Repair.Services;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Repair.SMS;
 using JsonReader = Aliyun.Acs.Core.Reader.JsonReader;
@@ -73,8 +75,8 @@ namespace Repair.Controllers
         public JsonResult GetSMSCode(string mobile)
         {
             var rd = new Random();
-            int i = rd.Next(100000,999999);
-            SmsHelper.SendAcs(mobile,new { code = i });
+            int i = rd.Next(100000, 999999);
+            SmsHelper.SendAcs(mobile, new {code = i});
             _memoryCache.Set(mobile, i, DateTimeOffset.UtcNow.AddSeconds(60));
             return Success();
         }
@@ -115,7 +117,7 @@ namespace Repair.Controllers
             {
                 return Fail("验证码错误");
             }
-            
+
             var user = await _userService.GetUserByMobile(dto.mobile);
             var u = new UserDTO();
             if (user == null)
@@ -177,6 +179,26 @@ namespace Repair.Controllers
         public async Task LoginOut()
         {
             await HttpContext.SignOutAsync();
+        }
+
+        public async Task<JsonResult> Upload(IFormFile formFile)
+        {
+            var imgPath = formFile.FileName.Substring(formFile.FileName.LastIndexOf("\\") + 1);
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var filePath = Path.Combine(currentDirectory,
+                "wwwroot/userfile/" +
+                imgPath).Replace("\\","/");
+
+            if (formFile.Length > 0)
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await formFile.CopyToAsync(stream);
+                }
+            }
+            
+            
+            return Success("/userfile/" + imgPath);
         }
     }
 }

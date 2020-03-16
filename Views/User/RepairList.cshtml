@@ -12,6 +12,9 @@
             {
                 <div class="card" @@click="goInfo(@item.Id)">
                     <div class="card-header">@item.statusName</div>
+                        <div valign="bottom" class="card-header color-white no-border no-padding">
+                          <img class='card-cover' style="width: 130px;margin-left: 10px;margin-top: 10px" src="@item.Img" alt="">
+                        </div>
                     <div class="card-content">
                         <div class="card-content-inner">@item.Remake。</div>
                         @if (item.Status != 1)
