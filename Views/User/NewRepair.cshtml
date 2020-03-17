@@ -63,9 +63,9 @@
                     <div class="item-inner">
                         <div class="item-title label">报修图片</div>
                         <div class="item-input">
-                            <img v-if="imgPath != ''" style="width:50%;margin-bottom:15px;margin-top: 10px" v-bind:src="imgPath" onclick="addImg()"/>
-                            <img v-if="imgPath == ''" style="width:20%;margin-bottom:15px;margin-top: 10px" src="~/dist/img/taking.png" onclick="addImg()"/>
-                            <input type="file" id="image" name="image" @@change="upload" style="display:none"/>
+                            <img v-show="lowImgPath != ''" id="imghs" style="width:50%;margin-bottom:15px;margin-top: 10px"  onclick="addImg()" />
+                            <img v-show="lowImgPath == ''" style="width:20%;margin-bottom:15px;margin-top: 10px" src="~/dist/img/taking.png" onclick="addImg()" />
+                            <input type="file" id="image" name="image" @@change="upload" style="display:none" />
                         </div>
                     </div>
                 </div>
@@ -89,7 +89,9 @@
                     user: {},
                     community: [],
                     repairInfo: '',
-                    imgPath:''
+                    imgPath: '',
+                    lowImgPath: '',
+                    base64Img: ''
                 }
             },
             methods: {
@@ -112,31 +114,32 @@
                     })
                 },
                 upload: function (event) {
-                    $.showPreloader();
-                    var file = event.target.files;
+                    var file = event.target.files[0];
                     var formData = new FormData();
-                    formData.append('formFile', file[0]);
-    $.ajax({
-        url:'/User/Upload',
-        dataType:'json',
-        type:'POST',
-        async: false,
-        data: formData,
-        processData : false, // 使数据不做处理
-        contentType : false, // 不要设置Content-Type请求头
-        success: function(data){
-            if(data.code == 0){
-                vue.$data.imgPath = data.data;
-            }
-        },
-        error:function(response){
-            console.log(response);
-        }
-        
-    });
-                        setTimeout(function () {
-                            $.hidePreloader();
-                        }, 4000);
+                    formData.append('formFile', file);
+                    $.ajax({
+                        url: '/User/Upload',
+                        dataType: 'json',
+                        type: 'POST',
+                        async: true,
+                        data: formData,
+                        processData: false, // 使数据不做处理
+                        contentType: false, // 不要设置Content-Type请求头
+                        beforeSend: function () {
+                            $.showPreloader();
+                        },
+                        success: function (data) {
+                            if (data.code == 0) {
+                                document.getElementById("imghs").src = "https://www.chak.ltd" + data.data.file;
+                                vue.$data.imgPath = "https://www.chak.ltd" + data.data.file;
+                                vue.$data.lowImgPath = data.data.lowFile;
+                                vue.$data.base64Img = 'data:image/png;base64,' + data.data.str;
+                            }
+                        }
+                    });
+                    setTimeout(function () {
+                        $.hidePreloader();
+                    }, 4000);
                 }
             },
             created: function () {
@@ -148,9 +151,23 @@
                 this.$data.community = @Html.Raw(ViewBag.Community);
             }
         });
-        
+
         function addImg(){
             document.getElementById("image").click();
+        }
+        function base64ImgtoFile(dataurl, filename = 'file') {
+            let arr = dataurl.split(',')
+            let mime = arr[0].match(/:(.*?);/)[1]
+            let suffix = mime.split('/')[1]
+            let bstr = atob(arr[1])
+            let n = bstr.length
+            let u8arr = new Uint8Array(n)
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n)
+            }
+            return new File([u8arr], `${filename}.${suffix}`, {
+                type: mime
+            })
         }
     </script>
 }

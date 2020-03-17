@@ -107,13 +107,13 @@
         function PageBase() {
             this.columns = [
                 {
-                    title: 'Id',
+                    title: '时间',
                     key: 'name',
                     fixed: 'left',
                     width: 150,
                     align: 'center',
                     render: function (h, par) {
-                        return par.row.id;
+                        return par.row.createTime.replace('T',' ');
                     }
                 },
                 {
@@ -190,7 +190,7 @@
                                   src: par.row.img,
                               },
                               on:{
-                                  click:()=>{
+                                  click:function(){
                                       var url = "https://www.chak.ltd" + par.row.img;
                                       window.open(url)
                                   }
