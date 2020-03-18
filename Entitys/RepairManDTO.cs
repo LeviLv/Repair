@@ -4,8 +4,10 @@ namespace Repair.Entitys
 {
     public class RepairManDTO : UserDTO
     {
-        public string commonityName { get; set; }
+        public string CommunityName { get; set; }
         
-        public string adminName { get; set; }
+        public string AdminName { get; set; }
+
+        public string CommunityIds { get; set; }
     }
 }

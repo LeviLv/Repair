@@ -95,7 +95,7 @@
                 },
                 pass(row, status) {
                     var url =  "/Admin/CommunityMan?commuityId=" + row.id + "&type=4" + "&repairId=" + row.id;
-                    this.openIframe('设置修理工',url , ["1200px", "600px"], function () { vue.search(vue.currPage); }, parent.layer);
+                    this.openIframe('设置修理工',url , ["1200px", "600px"], function () { vue.search(vue.currIndex); }, parent.layer);
                 }
             },
             created: function () {
@@ -172,32 +172,32 @@
                         return par.row.remake;
                     }
                 },
-                {
-                    title: '图片',
-                    key: 'homeNum',
-                    align: 'center',
-                    render: function (h, par) {
-                        if (par.row.img == '' || par.row.img == null){
-                            return null;
-                        }
-                         return h('img', {
-                              style: {//设置样式
-                                  width: '100px',
-                                  'height': '80px',
-                                  'border-radius': '5%'
-                              },
-                              attrs: {//设置属性
-                                  src: par.row.img,
-                              },
-                              on:{
-                                  click:function(){
-                                      var url = par.row.img;
-                                      window.open(url)
-                                  }
-                              }
-                          });
-                    }
-                },
+                //{
+                //    title: '图片',
+                //    key: 'homeNum',
+                //    align: 'center',
+                //    render: function (h, par) {
+                //        if (par.row.img == '' || par.row.img == null){
+                //            return null;
+                //        }
+                //         return h('img', {
+                //              style: {//设置样式
+                //                  width: '100px',
+                //                  'height': '80px',
+                //                  'border-radius': '5%'
+                //              },
+                //              attrs: {//设置属性
+                //                  src: par.row.img,
+                //              },
+                //              on:{
+                //                  click:function(){
+                //                      var url = par.row.img;
+                //                      window.open(url)
+                //                  }
+                //              }
+                //          });
+                //    }
+                //},
                 {
                     title: '负责修理工',
                     key: 'homeNum',

@@ -15,11 +15,15 @@ namespace Repair.Services
     public class CommunityService : BaseService<Community>
     {
         private readonly IRepository<User, int> _userRepository;
+        private readonly IRepository<RepairMan, int> _repairManRepository;
+
         public CommunityService(IRepository<Community, int> repository
-        ,IRepository<User, int> userRepository)
+            ,IRepository<User, int> userRepository
+            , IRepository<RepairMan, int> repairManRepository)
             : base(repository)
         {
             _userRepository = userRepository;
+            _repairManRepository = repairManRepository;
         }
 
         public async Task<List<Community>> GetAllAsync()
@@ -40,10 +44,14 @@ namespace Repair.Services
             var user = await _userRepository.GetAllAsync();
 
             var communityList = await _repository.PageListAsync<CommunityDTO>(func.Compile(), p => p.Id.Value, model);
+
+            var idList = communityList.List.Select(p => p.Id).ToList();
+            var manList = await _repairManRepository.GetListAsync(p => idList.Contains(p.CommunityId));
             communityList.List.ForEach(p =>
             {
+                
                 p.AdminName = user.FirstOrDefault(x => x.Id == p.AdminId)?.Name;
-                p.RepairManName = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Name;
+                p.RepairManName = string.Join(',', manList.Where(x => x.CommunityId == p.Id).Select(x => x.RepairManName).ToList());
             });
             
             
@@ -52,8 +60,19 @@ namespace Repair.Services
 
         public async Task SetCommuityRepairMan(int commuityId, int userId)
         {
-            var sql = $"update Community set RepairManId = {userId} where Id = {commuityId} ";
+            var sql = $"update Community set RepairManId = {userId} where Id = {commuityId} and RepairManId > 0 ";
             await DapperService.Execute(sql);
+
+            var u = await _userRepository.FirstOrDefultAsync(p => p.Id == userId);
+            var comm = await _repository.FirstOrDefultAsync(p => p.Id == commuityId);
+            var man = new RepairMan()
+            {
+                CommunityId = commuityId,
+                UserId = userId,
+                RepairManName = u?.Name,
+                CommunityName = comm?.Name
+            };
+            await _repairManRepository.InsertAsync(man);
         }
         
         public async Task SetCommuityAdmin(int commuityId, int userId)

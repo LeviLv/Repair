@@ -14,7 +14,10 @@ namespace Repair.EntityFramework.Domain
         /// <summary>
         /// 负责的小区id
         /// </summary>
-        [MaxLength(20)]
-        public string CommunityIds { get; set; }
+        public int CommunityId { get; set; }
+
+        public string CommunityName { get; set; }
+
+        public string RepairManName { get; set; }
     }
 }

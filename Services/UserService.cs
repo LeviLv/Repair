@@ -98,19 +98,10 @@ namespace Repair.Services
 
         public async Task<QueryResult<User>> GetUserList2(QueryUserModel pageBase)
         {
-            Expression<Func<User, bool>> func = p => true;
+            var comm = await _communityService.FirstOrDefult(p => p.AdminId == pageBase.AdminId); 
+            var sql = $" SELECT u.* from RepairMan r JOIN Users u ON u.Id = r.UserId where r.CommunityId = {comm.Id} ";
 
-            if (!string.IsNullOrWhiteSpace(pageBase.mobile))
-            {
-                func = func.And(p => p.Mobile == pageBase.mobile);
-            }
-
-            if (pageBase.IsRepair.HasValue)
-            {
-                func = func.And(p => p.IsRepairMan == pageBase.IsRepair);
-            }
-
-            var list = await _repository.PageListAsync(func.Compile(), p => p.Id, pageBase);
+            var list = await DapperService.PageList<User>(sql, pageBase);
             return list;
         }
         
@@ -128,13 +119,31 @@ namespace Repair.Services
             dtoList.ForEach(p =>
             {
                 var nameList = community.Where(x => x.RepairManId == p.Id).Select(x => x.Name).ToList();
-                p.commonityName = string.Join(",", nameList);
+                p.CommunityName = string.Join(",", nameList);
             });
 
             var result = new QueryResult<RepairManDTO>();
             result.List = dtoList;
             result.Total = list.Total;
             return result;
+        }
+
+        public async Task<QueryResult<RepairManDTO>> GetAllRepairManList(QueryRepairManModel pageBase)
+        {
+            var sql = $" SELECT * from Users where IsRepairMan = 1 ";
+            if (!string.IsNullOrWhiteSpace(pageBase.mobile))
+            {
+                sql += $" and Mobile = '{pageBase.mobile}' ";
+            }
+
+            var list = await DapperService.PageList<RepairManDTO>(sql, pageBase);
+
+            var commList = await _repairManRepository.GetAllAsync();
+            list.List.ForEach(p =>
+            {
+                p.CommunityName = string.Join(',', commList.Where(x => x.UserId == p.Id).Select(x => x.CommunityName).ToList());
+            });
+            return list;
         }
 
         public async Task<QueryResult<RepairManDTO>> GetRepairManList(QueryRepairManModel pageBase)
@@ -156,8 +165,8 @@ namespace Repair.Services
             list.List.ForEach(p =>
             {
                 var nameList = commList.Where(x => x.RepairManId == p.Id).Select(x => x.Name).ToList();
-                p.commonityName = string.Join("，", nameList);
-                p.adminName = commList.FirstOrDefault(x => x.AdminId == p.Id)?.Name;
+                p.CommunityName = string.Join("，", nameList);
+                p.AdminName = commList.FirstOrDefault(x => x.AdminId == p.Id)?.Name;
             });
             return list;
         }
@@ -167,21 +176,21 @@ namespace Repair.Services
             var sql = $"update Users set IsRepairMan = 1 where id = {userId}";
             await DapperService.Execute(sql);
 
-            var hasMan = await _repairManRepository.CountAsync(p => p.UserId == userId);
-            if (hasMan > 0)
-            {
-                var sql2 = $"update RepairMan set CommunityIds = '{communityIds}' ";
-                await DapperService.Execute(sql2);
-            }
-            else
-            {
-                var repairMan = new RepairMan()
-                {
-                    UserId = userId,
-                    CommunityIds = communityIds
-                };
-                await _repairManRepository.InsertAsync(repairMan);
-            }
+            //var hasMan = await _repairManRepository.CountAsync(p => p.UserId == userId);
+            //if (hasMan > 0)
+            //{
+            //    var sql2 = $"update RepairMan set CommunityIds = '{communityIds}' ";
+            //    await DapperService.Execute(sql2);
+            //}
+            //else
+            //{
+            //    var repairMan = new RepairMan()
+            //    {
+            //        UserId = userId,
+            //        CommunityIds = communityIds
+            //    };
+            //    await _repairManRepository.InsertAsync(repairMan);
+            //}
         }
 
         public async Task CancleRepairMan(int userId)

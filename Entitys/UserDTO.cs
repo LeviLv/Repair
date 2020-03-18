@@ -27,11 +27,6 @@ namespace Repair.Entitys
         public int CommunityId { get; set; }
 
         /// <summary>
-        /// 小区id
-        /// </summary>
-        public string CommunityIds { get; set; }
-
-        /// <summary>
         /// 门牌号
         /// </summary>
         public string HomeNum { get; set; }

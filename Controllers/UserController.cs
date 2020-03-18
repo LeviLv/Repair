@@ -200,7 +200,7 @@ namespace Repair.Controllers
                 "/wwwroot/userfile/" +
                 formFile.FileName.Substring(formFile.FileName.LastIndexOf("\\") + 1);
             var str = "";
-
+            var s = "";
             //UploadQiNiuResult result = new UploadQiNiuResult();
             if (formFile.Length > 0)
             {
@@ -219,7 +219,7 @@ namespace Repair.Controllers
                 var bucketName = "chakk";
 
                 // 上传文件
-                var s = Guid.NewGuid().ToString("N");
+                s = Guid.NewGuid().ToString("N");
                 AliOssHelper.PutObject(accessKeyId, accessKeySecret, endpoint, bucketName,s , filePath);
                str = AliOssHelper.GetIamgeUri(accessKeyId, accessKeySecret, endpoint, bucketName, s); 
             }
