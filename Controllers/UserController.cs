@@ -1,23 +1,26 @@
-﻿using System;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using Qiniu.Common;
+using Qiniu.Http;
+using Qiniu.IO;
+using Qiniu.IO.Model;
+using Qiniu.Util;
 using Repair.AutoMapper;
 using Repair.EntityFramework.Domain;
 using Repair.Entitys;
 using Repair.Models;
 using Repair.Services;
+using Repair.SMS;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
-using Repair.SMS;
-using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace Repair.Controllers
 {
@@ -77,7 +80,7 @@ namespace Repair.Controllers
         {
             var rd = new Random();
             int i = rd.Next(100000, 999999);
-            SmsHelper.SendAcs(mobile, new {code = i});
+            SmsHelper.SendAcs(mobile, new { code = i });
             _memoryCache.Set(mobile, i, DateTimeOffset.UtcNow.AddSeconds(60));
             return Success();
         }
@@ -180,7 +183,7 @@ namespace Repair.Controllers
         [Authorize]
         public async Task<JsonResult> UpdateRepairListStatus(int repairListId, int status)
         {
-            await _repairListService.update(repairListId, (RepairStatusEnum) status);
+            await _repairListService.update(repairListId, (RepairStatusEnum)status);
             return Success();
         }
 
@@ -189,35 +192,76 @@ namespace Repair.Controllers
             await HttpContext.SignOutAsync();
         }
 
+        [RequestSizeLimit(100_000_000)]
         public JsonResult Upload(IFormFile formFile)
         {
-            var imgPath = formFile.FileName
-                .Replace(formFile.FileName.Substring(0 , formFile.FileName.LastIndexOf('.')), Guid.NewGuid().ToString("N"))
-                .Substring(formFile.FileName.LastIndexOf("\\") + 1);
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var filePath = Path.Combine(currentDirectory,
-                "wwwroot/userfile/" + imgPath)
-                .Replace("\\", "/");
+            Console.WriteLine("开始上传");
+            var filePath = Directory.GetCurrentDirectory() +
+                "/wwwroot/userfile/" +
+                formFile.FileName.Substring(formFile.FileName.LastIndexOf("\\") + 1);
             var str = "";
 
-            
+            //UploadQiNiuResult result = new UploadQiNiuResult();
             if (formFile.Length > 0)
             {
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     formFile.CopyTo(stream);
                 }
+                //var stream = formFile.OpenReadStream();
+                //var bytes = new byte[stream.Length];
+                //stream.Read(bytes, 0, bytes.Length);
+                //stream.Seek(0, SeekOrigin.Begin);
+                //result = UploadImgToQiNiu(bytes, Guid.NewGuid().ToString("N"));
+                var accessKeyId = "LTAI4FfhUHPcQ1VHcKN5wEHc";
+                var accessKeySecret = "F2zwYrZ4xKUwayfhXWXmthzLKiMXnp ";
+                var endpoint = @"oss-cn-zhangjiakou.aliyuncs.com";
+                var bucketName = "chakk";
 
+                // 上传文件
+                var s = Guid.NewGuid().ToString("N");
+                AliOssHelper.PutObject(accessKeyId, accessKeySecret, endpoint, bucketName,s , filePath);
+               str = AliOssHelper.GetIamgeUri(accessKeyId, accessKeySecret, endpoint, bucketName, s); 
             }
-            return Success(new { file = "/userfile/" + imgPath,lowFile = "/userfilelow/" + imgPath ,str = str });
+
+            return Success(new { file = str, lowFile = str });
         }
 
-        private byte[] SaveImage(String path)
+        private UploadQiNiuResult UploadImgToQiNiu(byte[] stream, string fileName)
         {
-            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read); //将图片以文件流的形式进行保存
-            BinaryReader br = new BinaryReader(fs);
-            byte[] imgBytesIn = br.ReadBytes((int)fs.Length); //将流读入到字节数组中
-            return imgBytesIn;
+            Mac mac = new Mac("3bIPVP-HqYkvgKBOGL7l3TA9qojhYNVJ6Lal6HGH", "WH6NV3Xl0t5ODN7zke5Ojk0DkhOU02Cp1uKkqPCB");
+            // 上传策略，参见
+            // https://developer.qiniu.com/kodo/manual/put-policy
+            PutPolicy putPolicy = new PutPolicy();
+            // 如果需要设置为"覆盖"上传(如果云端已有同名文件则覆盖)，请使用 SCOPE = "BUCKET:KEY"
+            // putPolicy.Scope = bucket + ":" + saveKey;
+            var saveKey = string.Format("BlogImg/{0}/", DateTime.Now.ToString("yyyy/MM/dd")) + fileName;
+            putPolicy.Scope = "chakk:" + saveKey;
+            // 上传策略有效期(对应于生成的凭证的有效期)
+            putPolicy.SetExpires(3600);
+            // 上传到云端多少天后自动删除该文件，如果不设置（即保持默认默认）则不删除
+            // putPolicy.DeleteAfterDays = 1;
+            string jstr = putPolicy.ToJsonString();
+            //获取上传凭证
+            var uploadToken = Auth.CreateUploadToken(mac, jstr);
+
+            Config.ZONE = Zone.ZONE_CN_South(true);
+            UploadManager um = new UploadManager();
+
+            HttpResult result = um.UploadData(stream, saveKey, uploadToken);
+
+            if (result.Code == 200)
+            {
+                return JsonConvert.DeserializeObject<UploadQiNiuResult>(result.Text);
+            }
+            return null;
+        }
+
+        public class UploadQiNiuResult
+        {
+            public string Hash { get; set; }
+
+            public string Key { get; set; }
         }
     }
 }

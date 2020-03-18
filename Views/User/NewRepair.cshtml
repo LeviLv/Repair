@@ -130,16 +130,15 @@
                         },
                         success: function (data) {
                             if (data.code == 0) {
-                                document.getElementById("imghs").src = "https://www.chak.ltd" + data.data.file;
-                                vue.$data.imgPath = "https://www.chak.ltd" + data.data.file;
+                                document.getElementById("imghs").src = data.data.file ;
+                                vue.$data.imgPath = data.data.file;
                                 vue.$data.lowImgPath = data.data.lowFile;
-                                vue.$data.base64Img = 'data:image/png;base64,' + data.data.str;
                             }
+                        },
+                        complete: function () {
+                            $.hidePreloader();
                         }
                     });
-                    setTimeout(function () {
-                        $.hidePreloader();
-                    }, 4000);
                 }
             },
             created: function () {
