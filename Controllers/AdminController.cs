@@ -81,7 +81,14 @@ namespace Repair.Controllers
             var list = await _userService.GetUserList(pageBase);
             return Jsons(list);
         }
-        
+
+        public async Task<JsonResult> GetAllRepair(QueryUserModel pageBase)
+        {
+            pageBase.AdminId = loginDto.CurrentId;
+            var list = await _userService.GetAllRepair(pageBase);
+            return Jsons(list);
+        }
+
         public async Task<JsonResult> GetUserList2(QueryUserModel pageBase)
         {
             pageBase.AdminId = loginDto.CurrentId;

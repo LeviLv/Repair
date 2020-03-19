@@ -38,6 +38,13 @@
     <script>
         var pageBase = new PageBase();
         var searchModel = '@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.SearchModel))';
+        var type = '@Context.Request.Query["type"]';
+        var url = '';
+        if (type == '4') {
+            url = '/Admin/GetUserList2';
+        } else {
+            url = '/Admin/GetAllRepair';
+        }
         var vue = new vueTableBase({
             el: '#divAdmin',
             data: function () {
@@ -49,7 +56,7 @@
                     searchModel: searchModel,
                     defaultSearch: searchModel,
                     isShowSelect: false,
-                    getlistUrl: "/Admin/GetUserList2",
+                    getlistUrl: url,
                     pageSize: searchModel.PageSize,
                     currIndex: 0,
                     tableColumns: pageBase.columns

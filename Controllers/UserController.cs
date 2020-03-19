@@ -221,7 +221,7 @@ namespace Repair.Controllers
                 // 上传文件
                 s = Guid.NewGuid().ToString("N");
                 AliOssHelper.PutObject(accessKeyId, accessKeySecret, endpoint, bucketName,s , filePath);
-               str = AliOssHelper.GetIamgeUri(accessKeyId, accessKeySecret, endpoint, bucketName, s); 
+                str = AliOssHelper.GetIamgeUri(accessKeyId, accessKeySecret, endpoint, bucketName, s); 
             }
 
             return Success(new { file = str, lowFile = str });

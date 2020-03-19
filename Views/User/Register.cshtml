@@ -60,6 +60,13 @@
             },
             methods: {
                 register: function () {
+                    if (this.$data.mobile == '' || this.$data.mobile == null) {
+                        return;
+                    }
+                    if (this.$data.mobile.length != 11) {
+                        $.toast("请输入正确的手机号码");
+                        return;
+                    }
                     var url = '/User/Register';
                     var data = {
                         mobile: this.$data.mobile,

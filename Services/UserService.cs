@@ -96,15 +96,25 @@ namespace Repair.Services
             return list;
         }
 
-        public async Task<QueryResult<User>> GetUserList2(QueryUserModel pageBase)
+        public async Task<QueryResult<User>> GetAllRepair(QueryUserModel pageBase)
         {
             var comm = await _communityService.FirstOrDefult(p => p.AdminId == pageBase.AdminId); 
-            var sql = $" SELECT u.* from RepairMan r JOIN Users u ON u.Id = r.UserId where r.CommunityId = {comm.Id} ";
+            var sql = $" SELECT * FROM Users WHERE IsRepairMan = 1 ";
 
             var list = await DapperService.PageList<User>(sql, pageBase);
             return list;
         }
-        
+
+        public async Task<QueryResult<User>> GetUserList2(QueryUserModel pageBase)
+        {
+            var comm = await _communityService.FirstOrDefult(p => p.AdminId == pageBase.AdminId);
+            var sql = $" SELECT u.* from RepairMan r RIGHT JOIN Users u ON u.Id = r.UserId where r.CommunityId = {comm.Id} ";
+
+            var list = await DapperService.PageList<User>(sql, pageBase);
+            return list;
+        }
+
+
         public async Task<QueryResult<RepairManDTO>> GetRepairManList(QueryUserModel pageBase)
         {
             var community = await _communityService.GetAllAsync();

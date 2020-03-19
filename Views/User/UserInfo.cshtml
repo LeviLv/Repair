@@ -72,7 +72,8 @@
                     <div class="item-inner">
                         <div class="item-title label">手机号码</div>
                         <div class="item-input">
-                            <input type="text" placeholder="手机号码" v-model="user.mobile">
+                            <input type="text" placeholder="手机号码" v-if="!isDisable" v-model="user.mobile">
+                            <input type="text" placeholder="手机号码" v-else v-model="user.mobile" disabled>
                         </div>
                     </div>
                 </div>
@@ -109,7 +110,8 @@
                     user: {},
                     communityId: 1,
                     community: [],
-                    smsCode: ''
+                    smsCode: '',
+                    isDisable: false
                 }
             },
             methods: {
@@ -146,6 +148,9 @@
                 var _this = this;
                 $.get("/User/GetLoginUser", function (result) {
                     vue.user = result.data;
+                if (vue.user.mobile != '' || vue.user.mobile != null) {
+                    vue.isDisable = true;
+                }
                 });
 
                 this.$data.community = @Html.Raw(ViewBag.Community);

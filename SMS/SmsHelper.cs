@@ -71,7 +71,7 @@ namespace Repair.SMS
             {
                 request.PhoneNumbers = mobile;
                 //必填:短信签名-可在短信控制台中找到
-                request.SignName = "Chak小修订单通知";
+                request.SignName = "物业智能维修";
                 //必填:短信模板-可在短信控制台中找到，发送国际/港澳台消息时，请使用国际/港澳台短信模版
                 request.TemplateCode = "SMS_185813138";
                 //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为

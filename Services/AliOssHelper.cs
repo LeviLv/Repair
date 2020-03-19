@@ -80,7 +80,7 @@ namespace Repair.Services
                 var process = $"image/resize,m_fixed,w_{width},h_{height}";
                 var req = new GeneratePresignedUriRequest(bucketName, key, SignHttpMethod.Get)
                 {
-                    Expiration = DateTime.Now.AddHours(1),
+                    Expiration = DateTime.Now.AddHours(64),
                     Process = process
                 };
                 var uri = client.GeneratePresignedUri(req);

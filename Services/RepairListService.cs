@@ -80,11 +80,11 @@ namespace Repair.Services
             Expression<Func<RepairList, bool>> func = p => true;
             if (status != null)
             {
-                func = p => (p.Status == status.Value);
+                func = func.And(p => p.Status == status.Value);
             }
             else if (userId.HasValue)
             {
-                func = p => p.UserId == userId;
+                func = func.And(p => p.UserId == userId);
             }
 
             var list = (await _repository.GetListAsync(func)).MapTo<List<RepairListDTO>>();
@@ -103,14 +103,14 @@ namespace Repair.Services
 
         public async Task<List<RepairList>> GetRepairListByRepairManId(int id, int? status)
         {
-            Expression<Func<RepairList, bool>> func;
+            Expression<Func<RepairList, bool>> func = p => true;
             if (status != null)
             {
-                func = p => (p.Status == status.Value) && (p.RepairManId == id);
+                func = func.And(p => (p.Status == status.Value) && (p.RepairManId == id));
             }
             else
             {
-                func = p => p.RepairManId == id;
+                func = func.And(p => p.RepairManId == id);
             }
 
             return await _repository.GetListAsync(func);

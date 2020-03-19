@@ -15,6 +15,7 @@ namespace Repair
     {
         public static void Main(string[] args)
         {
+            //SmsHelper.sendUserMsg("15591008934",new { name = "123",tel = "4" });
             CreateHostBuilder(args).Build().Run();
         }
 
