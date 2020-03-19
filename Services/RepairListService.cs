@@ -82,9 +82,9 @@ namespace Repair.Services
             {
                 func = func.And(p => p.Status == status.Value);
             }
-            else if (userId.HasValue)
+            if (userId.HasValue)
             {
-                func = func.And(p => p.UserId == userId);
+                func = func.And(p => p.RepairManId == userId);
             }
 
             var list = (await _repository.GetListAsync(func)).MapTo<List<RepairListDTO>>();
