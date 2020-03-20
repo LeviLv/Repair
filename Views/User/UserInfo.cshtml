@@ -22,9 +22,10 @@
                     <div class="item-inner">
                         <div class="item-title label">小区</div>
                         <div class="item-input">
-                            <select v-model="user.communityId">
+                            @*<select v-model="user.communityId">
                                 <option v-for="item in community" :value="item.Id">{{item.Name}}</option>
-                            </select>
+                            </select>*@
+                            <input type="text" id='picker' :value="commName"/>
                         </div>
                     </div>
                 </div>
@@ -110,6 +111,7 @@
                     user: {},
                     communityId: 1,
                     community: [],
+                    commName:'',
                     smsCode: '',
                     isDisable: false
                 }
@@ -133,6 +135,10 @@
                         $.toast("详细住址不能为空");
                         return;
                     }
+                    if (val == '') {
+                        $.toast("请选择小区");
+                        return;
+                    }
 
                     var url =  '/User/EditUser';
                     var _data = JSON.stringify(this.$data.user);
@@ -148,13 +154,51 @@
                 var _this = this;
                 $.get("/User/GetLoginUser", function (result) {
                     vue.user = result.data;
-                if (vue.user.mobile != '' || vue.user.mobile != null) {
-                    vue.isDisable = true;
-                }
+                    if (vue.user.mobile != '' || vue.user.mobile != null) {
+                        vue.isDisable = true;
+                    }
+
+                    var comm = @Html.Raw(ViewBag.Community);
+                    vue.community = comm;
+                    for (var i = 0; i < comm.length; i++) {
+                        if (comm[i].Id == vue.user.communityId) {
+                            vue.commName = comm[i].Name;
+                        }
+                    }
                 });
 
-                this.$data.community = @Html.Raw(ViewBag.Community);
             }
         })
+
+        var s = vue.$data.community;
+        var list = [];
+        var idList = [];
+
+        var val = "", displayVal = "";
+        for (var i = 0; i < s.length; i++) {
+            idList.push(s[i].Id)
+            list.push(s[i].Name)
+        }
+        $("#picker").picker({
+            toolbarTemplate: '<header class="bar bar-nav">\
+  <button class="button button-link pull-right close-picker">确定</button>\
+  <h1 class="title">标题</h1>\
+  </header>',
+            cols: [
+                {
+                    textAlign: 'center',
+                    values: idList,
+                    displayValues: list
+                }
+            ],
+            formatValue: function (p, values, displayValues) {//自定义方法，用来控制如何显示picker的选中值
+                return displayValues[0];
+            },
+            onClose: function (picker, values, displayValues) {//picker 关闭时的触发动作
+                //这里获取关闭时选择的值
+                val = picker.value[0];
+                displayVal = picker.displayValue[0];
+            }
+        });
     </script>
 }
