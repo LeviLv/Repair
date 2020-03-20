@@ -84,7 +84,7 @@ namespace Repair.Services
             }
             if (userId.HasValue)
             {
-                func = func.And(p => p.RepairManId == userId);
+                func = func.And(p => p.UserId == userId);
             }
 
             var list = (await _repository.GetListAsync(func)).MapTo<List<RepairListDTO>>();
@@ -93,6 +93,32 @@ namespace Repair.Services
             list.ForEach(p =>
             {
                 p.statusName = ((RepairStatusEnum) p.Status).GetDisplayName();
+                p.CommunityName = commonity.FirstOrDefault(x => x.Id == p.CommunityId)?.Name;
+                p.RepairManName = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Name;
+                p.User = user.FirstOrDefault(x => x.Id == p.UserId);
+                p.RepairManMobile = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Mobile;
+            });
+            return list;
+        }
+
+        public async Task<List<RepairListDTO>> GetRepairListByStatusByMan(int? userId, int? status)
+        {
+            Expression<Func<RepairList, bool>> func = p => true;
+            if (status != null)
+            {
+                func = func.And(p => p.Status == status.Value);
+            }
+            if (userId.HasValue)
+            {
+                func = func.And(p => p.RepairManId == userId);
+            }
+
+            var list = (await _repository.GetListAsync(func)).MapTo<List<RepairListDTO>>();
+            var commonity = await _communityRepository.GetAllAsync();
+            var user = await _userRepository.GetAllAsync();
+            list.ForEach(p =>
+            {
+                p.statusName = ((RepairStatusEnum)p.Status).GetDisplayName();
                 p.CommunityName = commonity.FirstOrDefault(x => x.Id == p.CommunityId)?.Name;
                 p.RepairManName = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Name;
                 p.User = user.FirstOrDefault(x => x.Id == p.UserId);

@@ -95,7 +95,7 @@ namespace Repair.Controllers
         [Authorize]
         public async Task<IActionResult> RepairListAsRepairMan(int? status)
         {
-            var model = await _repairListService.GetRepairListByStatus(GetUID(), status);
+            var model = await _repairListService.GetRepairListByStatusByMan(GetUID(), status);
             return View(model);
         }
 
@@ -118,15 +118,15 @@ namespace Repair.Controllers
         [HttpPost]
         public async Task<JsonResult> Register([FromBody] UserRegisterDto dto)
         {
-            if (dto.mobile != "15591008934")
-            {
-                var mobile = dto.mobile;
-                var cacheCode = _memoryCache.Get<int>(mobile);
-                if (cacheCode != dto.num)
-                {
-                    return Fail("验证码错误");
-                }
-            }
+            //if (dto.mobile != "15591008934")
+            //{
+            //    var mobile = dto.mobile;
+            //    var cacheCode = _memoryCache.Get<int>(mobile);
+            //    if (cacheCode != dto.num)
+            //    {
+            //        return Fail("验证码错误");
+            //    }
+            //}
 
             var user = await _userService.GetUserByMobile(dto.mobile);
             var u = new UserDTO();
