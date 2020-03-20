@@ -118,15 +118,17 @@ namespace Repair.Controllers
         [HttpPost]
         public async Task<JsonResult> Register([FromBody] UserRegisterDto dto)
         {
-            //if (dto.mobile != "15591008934")
-            //{
-            //    var mobile = dto.mobile;
-            //    var cacheCode = _memoryCache.Get<int>(mobile);
-            //    if (cacheCode != dto.num)
-            //    {
-            //        return Fail("验证码错误");
-            //    }
-            //}
+#if DEBUG
+            if (dto.mobile != "15591008934")
+            {
+                var mobile = dto.mobile;
+                var cacheCode = _memoryCache.Get<int>(mobile);
+                if (cacheCode != dto.num)
+                {
+                    return Fail("验证码错误");
+                }
+            }
+#endif
 
             var user = await _userService.GetUserByMobile(dto.mobile);
             var u = new UserDTO();
