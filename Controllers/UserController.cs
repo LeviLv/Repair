@@ -118,7 +118,7 @@ namespace Repair.Controllers
         [HttpPost]
         public async Task<JsonResult> Register([FromBody] UserRegisterDto dto)
         {
-#if DEBUG
+#if !DEBUG
             if (dto.mobile != "15591008934")
             {
                 var mobile = dto.mobile;

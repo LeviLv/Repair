@@ -135,9 +135,8 @@
                         $.toast("详细住址不能为空");
                         return;
                     }
-                    if (val == '') {
-                        $.toast("请选择小区");
-                        return;
+                    if (val != '') {
+                        this.$data.user.communityId = Number(val);
                     }
 
                     var url =  '/User/EditUser';
@@ -152,17 +151,23 @@
             },
             created: function () {
                 var _this = this;
-                $.get("/User/GetLoginUser", function (result) {
-                    vue.user = result.data;
-                    if (vue.user.mobile != '' || vue.user.mobile != null) {
-                        vue.isDisable = true;
-                    }
 
-                    var comm = @Html.Raw(ViewBag.Community);
-                    vue.community = comm;
-                    for (var i = 0; i < comm.length; i++) {
-                        if (comm[i].Id == vue.user.communityId) {
-                            vue.commName = comm[i].Name;
+                $.ajax({
+                    url: "/User/GetLoginUser",
+                    type: 'get',
+                    async: false,
+                    success: function (result) {
+                        _this.user = result.data;
+                        if (_this.user.mobile != '' || _this.user.mobile != null) {
+                            _this.isDisable = true;
+                        }
+                        
+                        var comm = @Html.Raw(ViewBag.Community);
+                        _this.community = comm;
+                        for (var i = 0; i < comm.length; i++) {
+                            if (comm[i].Id == _this.user.communityId) {
+                                _this.commName = comm[i].Name;
+                            }
                         }
                     }
                 });
