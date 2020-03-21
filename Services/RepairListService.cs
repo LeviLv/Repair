@@ -3,6 +3,7 @@ using Repair.EntityFramework;
 using Repair.EntityFramework.Domain;
 using Repair.Entitys;
 using Repair.Models;
+using Repair.SMS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +98,7 @@ namespace Repair.Services
                 p.RepairManName = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Name;
                 p.User = user.FirstOrDefault(x => x.Id == p.UserId);
                 p.RepairManMobile = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Mobile;
+                p.Img = AliOssHelper.GetIamgeUri(p.Img);
             });
             return list;
         }
@@ -123,6 +125,7 @@ namespace Repair.Services
                 p.RepairManName = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Name;
                 p.User = user.FirstOrDefault(x => x.Id == p.UserId);
                 p.RepairManMobile = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Mobile;
+                p.Img = AliOssHelper.GetIamgeUri(p.Img);
             });
             return list;
         }
@@ -185,6 +188,11 @@ namespace Repair.Services
                 Status = (int) RepairStatusEnum.Sure
             };
             await _infoRepository.InsertAsync(info);
+
+            var repairList = await _repository.FirstOrDefultAsync(p => p.Id == repairId);
+            var u = await _userRepository.FirstOrDefultAsync(p => p.Id == repairList.UserId);
+
+            SmsHelper.sendUserMsg(u.Mobile, new { name = user.Name, tel = user.Mobile });
         }
     }
 }

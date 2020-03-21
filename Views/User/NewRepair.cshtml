@@ -105,7 +105,7 @@
                     var _data = {
                         remake: this.$data.repairInfo,
                         communityId : this.$data.user.communityId,
-                        img: this.$data.imgPath
+                        img: this.$data.lowImgPath
                     };
                     post(url, JSON.stringify(_data), function (result) {
                         $.alert("报修成功，请等待系统派单", "通知", function (result) {
