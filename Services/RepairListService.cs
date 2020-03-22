@@ -180,19 +180,22 @@ namespace Repair.Services
             var sql = $"update RepairList set RepairManId = {repairManId} ,status = 2 where Id = {repairId}";
             await DapperService.Execute(sql);
 
-            var user = await _userRepository.FirstOrDefultAsync(p => p.Id == repairManId);
+            var repair = await _userRepository.FirstOrDefultAsync(p => p.Id == repairManId);
             var info = new RepairListInfo()
             {
                 ListId = repairId,
-                Remake = $"系统派单，修理工：{user.Name}（{user.Mobile}）",
+                Remake = $"系统派单，修理工：{repair.Name}（{repair.Mobile}）",
                 Status = (int) RepairStatusEnum.Sure
             };
             await _infoRepository.InsertAsync(info);
 
             var repairList = await _repository.FirstOrDefultAsync(p => p.Id == repairId);
-            var u = await _userRepository.FirstOrDefultAsync(p => p.Id == repairList.UserId);
+            var user = await _userRepository.FirstOrDefultAsync(p => p.Id == repairList.UserId);
 
-            SmsHelper.sendUserMsg(u.Mobile, new { name = user.Name, tel = user.Mobile });
+            SmsHelper.sendUserMsg(user.Mobile, new { name = repair.Name, tel = repair.Mobile });
+
+            var comm = await _communityRepository.FirstOrDefultAsync(p => p.Id == user.CommunityId);
+            SmsHelper.sendRepairMsg(repair.Mobile, new { name = user.Name, tel = user.Mobile, home = $"{comm.Name}-{user.HomeAddress}-{user.HomeNum}" });
         }
     }
 }
