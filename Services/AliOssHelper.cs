@@ -86,5 +86,29 @@ namespace Repair.Services
                 var uri = client.GeneratePresignedUri(req);
                 return uri.ToString();
         }
+
+        public static string GetIamgeUri(string key, float width = 100, float height = 100)
+        {
+            try
+            {
+                var accessKeyId = "LTAI4FfhUHPcQ1VHcKN5wEHc";
+                var accessKeySecret = "F2zwYrZ4xKUwayfhXWXmthzLKiMXnp ";
+                var endpoint = @"oss-cn-zhangjiakou.aliyuncs.com";
+                var bucketName = "chakk";
+                var client = new OssClient(endpoint, accessKeyId, accessKeySecret);
+                var process = $"image/resize,m_fixed,w_{width},h_{height}";
+                var req = new GeneratePresignedUriRequest(bucketName, key, SignHttpMethod.Get)
+                {
+                    Expiration = DateTime.Now.AddHours(64),
+                    Process = process
+                };
+                var uri = client.GeneratePresignedUri(req);
+                return uri.ToString();
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
     }
 }

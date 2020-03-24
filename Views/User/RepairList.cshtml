@@ -10,7 +10,7 @@
         {
             @foreach (var item in Model)
             {
-                <div class="card" @@click="goInfo(@item.Id)">
+                <div class="card" @@click="goInfo(@item.Id,@item.Status)">
                     <div class="card-header">@item.statusName</div>
                         <div valign="bottom" class="card-header color-white no-border no-padding">
                           <img class='card-cover' style="width: 130px;margin-left: 10px;margin-top: 10px" src="@item.Img" alt="">
@@ -37,12 +37,17 @@
         var vue = new Vue({
             el: '#detail',
             data: {
-                repairList:[]
+                repairList: []
             },
             methods: {
-                goInfo: function (id) {
+                goInfo: function (id, status) {
+                    if (status == 4) {
+                        var url = '/User/ComRepair?id=';
+                        location.href = url + id;
+                    } else {
                         var url = '/User/RepairInfo?id=';
                         location.href = url + id;
+                    }
                 }
             },
             created: function () {

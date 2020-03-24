@@ -25,5 +25,20 @@ namespace Repair.Services
             });
             return dtoList;
         }
+
+        public async Task CommRepairRemake(ComRepairDTO dto)
+        {
+            var sql = $" UPDATE RepairList SET `Status` = {(int)RepairStatusEnum.Success} WHERE Id = {dto.repairId} ;";
+            await DapperService.Execute(sql);
+
+            var info = new RepairListInfo()
+            {
+                ListId = dto.repairId,
+                Remake = dto.str,
+                Status = (int)RepairStatusEnum.Success
+            };
+            await _repository.InsertAsync(info);
+        }
+
     }
 }

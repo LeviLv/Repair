@@ -3,6 +3,7 @@ using Repair.EntityFramework;
 using Repair.EntityFramework.Domain;
 using Repair.Entitys;
 using Repair.Models;
+using Repair.SMS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +98,7 @@ namespace Repair.Services
                 p.RepairManName = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Name;
                 p.User = user.FirstOrDefault(x => x.Id == p.UserId);
                 p.RepairManMobile = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Mobile;
+                p.Img = AliOssHelper.GetIamgeUri(p.Img);
             });
             return list;
         }
@@ -123,6 +125,7 @@ namespace Repair.Services
                 p.RepairManName = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Name;
                 p.User = user.FirstOrDefault(x => x.Id == p.UserId);
                 p.RepairManMobile = user.FirstOrDefault(x => x.Id == p.RepairManId)?.Mobile;
+                p.Img = AliOssHelper.GetIamgeUri(p.Img);
             });
             return list;
         }
@@ -177,14 +180,22 @@ namespace Repair.Services
             var sql = $"update RepairList set RepairManId = {repairManId} ,status = 2 where Id = {repairId}";
             await DapperService.Execute(sql);
 
-            var user = await _userRepository.FirstOrDefultAsync(p => p.Id == repairManId);
+            var repair = await _userRepository.FirstOrDefultAsync(p => p.Id == repairManId);
             var info = new RepairListInfo()
             {
                 ListId = repairId,
-                Remake = $"系统派单，修理工：{user.Name}（{user.Mobile}）",
+                Remake = $"系统派单，修理工：{repair.Name}（{repair.Mobile}）",
                 Status = (int) RepairStatusEnum.Sure
             };
             await _infoRepository.InsertAsync(info);
+
+            var repairList = await _repository.FirstOrDefultAsync(p => p.Id == repairId);
+            var user = await _userRepository.FirstOrDefultAsync(p => p.Id == repairList.UserId);
+
+            SmsHelper.sendUserMsg(user.Mobile, new { name = repair.Name, tel = repair.Mobile });
+
+            var comm = await _communityRepository.FirstOrDefultAsync(p => p.Id == user.CommunityId);
+            SmsHelper.sendRepairMsg(repair.Mobile, new { name = user.Name, tel = user.Mobile, home = $"{comm.Name}-{user.HomeAddress}-{user.HomeNum}" });
         }
     }
 }

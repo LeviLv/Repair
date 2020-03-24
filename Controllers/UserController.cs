@@ -100,6 +100,19 @@ namespace Repair.Controllers
         }
 
         [Authorize]
+        public IActionResult ComRepair(int id)
+        {
+            return View();
+        }
+
+        [Authorize, HttpPost]
+        public async Task<JsonResult> ComRepairStr([FromBody]ComRepairDTO dto)
+        {
+            await _repairListInfoService.CommRepairRemake(dto);
+            return Success();
+        }
+
+        [Authorize]
         public async Task<IActionResult> RepairInfo(int id)
         {
             var list = await _repairListInfoService.GetRepairInfo(id);
@@ -227,11 +240,11 @@ namespace Repair.Controllers
 
                 // 上传文件
                 s = Guid.NewGuid().ToString("N");
-                AliOssHelper.PutObject(accessKeyId, accessKeySecret, endpoint, bucketName,s , filePath);
-                str = AliOssHelper.GetIamgeUri(accessKeyId, accessKeySecret, endpoint, bucketName, s); 
+                AliOssHelper.PutObject(accessKeyId, accessKeySecret, endpoint, bucketName, s, filePath);
+                str = AliOssHelper.GetIamgeUri(accessKeyId, accessKeySecret, endpoint, bucketName, s);
             }
 
-            return Success(new { file = str, lowFile = str });
+            return Success(new { file = str, lowFile = s });
         }
 
         private UploadQiNiuResult UploadImgToQiNiu(byte[] stream, string fileName)

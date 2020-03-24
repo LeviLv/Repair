@@ -1,0 +1,52 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <div class="content">
+        <div class="list-block">
+            <ul>
+                <li class="align-top">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title label">评价</div>
+                            <div class="item-input" style="height:250px">
+                                <textarea id="txt"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="content-block">
+            <div class="row">
+                <div class="col-100"><a href="#" class="button button-big button-fill button-success" onclick="submit()">提交</a></div>
+            </div>
+        </div>
+    </div>
+
+
+@section scripts{ 
+    <script>
+
+        function submit() {
+        var str = $("#txt").val();
+        var id = @Context.Request.Query["id"];
+            if (str == '') {
+                $.toast("请输入您的评价")
+                return;
+            }
+            var data = {
+                str: str,
+                repairId: id
+            };
+            post("/User/ComRepairStr", JSON.stringify(data), function (msg) {
+                if (msg.code == 0) {
+                    $.alert("感谢您的反馈", "通知", function (result) {
+                        location.href = "/Home/Index";
+                    })
+                }
+            })
+        }
+    </script>
+}
