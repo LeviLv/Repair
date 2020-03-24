@@ -96,5 +96,17 @@ namespace Repair.Services
             var user = await _userRepository.FirstOrDefultAsync(p => p.Id == community.AdminId);
             return user?.Name;
         }
+
+        public async Task DelCommunity(int id)
+        {
+            var sql = $" DELETE FROM Community WHERE Id = {id}  ";
+            await DapperService.Execute(sql);
+
+            var sql2 = $" DELETE FROM RepairList WHERE CommunityId = {id}; ";
+            await DapperService.Execute(sql2);
+
+            var sql3 = $" DELETE FROM RepairMan WHERE CommunityId = {id}; ";
+            await DapperService.Execute(sql3);
+        }
     }
 }

@@ -145,9 +145,22 @@
                 var _this = this;
                 $.get("/User/GetUser?id=" + _this.$data.userId, function (result) {
                     vue.user = result.data;
-                });
 
-                this.$data.community = @Html.Raw(ViewBag.Community);
+                    _this.$data.community = @Html.Raw(ViewBag.Community);
+
+                    var has = false;
+                    for (var i = 0; i < _this.$data.community.length; i++) {
+                        if (_this.$data.user.communityId == _this.$data.community[i].Id) {
+                            has = true;
+                        } 
+                    }
+                    if (!has) {
+                        var msg = '请先完善您所在的小区'
+                        $.alert(msg, "提示", function () {
+                            window.location.href = '/User/UserInfo';
+                        });
+                    }
+                });
             }
         });
 

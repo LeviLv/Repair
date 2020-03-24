@@ -99,6 +99,13 @@
                 setAdmin(row, status) {
                     this.openIframe('设置负责人', "/Admin/CommunityMan?commuityId=" + row.id, ["1200px", "600px"], function () { vue.search(vue.currPage); }, parent.layer);
                 },
+                del(row, status) {
+                    layer.confirm('你确定要删除社区吗?删除后与社区关联的维修工和维修单都会被删除!', { icon: 3, title: '提示' }, function (index) {
+                        $.get("/Admin/DelCommunity?id=" + row.id, function () {
+                            layer.msg("成功");
+                        })
+                    });
+                },
                 insert(){
                     this.openIframe('新增社区', "/Admin/InsertCommunity", ["300px", "300px"], function () { vue.search(1); }, parent.layer);
                 }
@@ -153,12 +160,27 @@
                     align: 'center',
                     render: function (h, params) {
                         var hs = [];
+
+                        hs.push(h('a', {
+                            style: {
+                                marginRight: '5px',
+                                cursor: 'pointer',
+                                textDecoration: "underline",
+                                display:"block"
+                            },
+                            on: {
+                                click: function () {
+                                    vue.pass(params.row, 1)
+                                }
+                            }
+                        }, "设置新修理工"));
                         if (@ViewBag.IsSuper == 1){
                             hs.push(h('a', {
                                 style: {
                                     marginRight: '5px',
                                     cursor: 'pointer',
-                                    textDecoration: "underline"
+                                    textDecoration: "underline",
+                                display:"block"
                                 },
                                 on: {
                                     click: function () {
@@ -166,19 +188,20 @@
                                     }
                                 }
                             }, "设置新负责人"));
-                        }
                             hs.push(h('a', {
                                 style: {
                                     marginRight: '5px',
                                     cursor: 'pointer',
-                                    textDecoration: "underline"
+                                    textDecoration: "underline",
+                                display:"block"
                                 },
                                 on: {
                                     click: function () {
-                                        vue.pass(params.row, 1)
+                                        vue.del(params.row, 1)
                                     }
                                 }
-                            }, "设置新修理工"));
+                            }, "删除"));
+                        }
                         return hs;
                     }
                 }

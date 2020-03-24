@@ -142,6 +142,10 @@
                     var url =  '/User/EditUser';
                     var _data = JSON.stringify(this.$data.user);
                     post(url, _data, function (result) {
+                        if (result.code != 0) {
+                            $.toast(result.message);
+                            return;
+                        }
                         var msg = '更改成功'
                         $.alert(msg, "提示", function () {
                             window.location.href = '/Home/Index';

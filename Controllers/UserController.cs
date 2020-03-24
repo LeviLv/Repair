@@ -158,6 +158,11 @@ namespace Repair.Controllers
         [HttpPost, Authorize]
         public async Task<JsonResult> EditUser([FromBody] UserDTO dto)
         {
+            var com = await _communityService.FirstOrDefult(p => p.Id == dto.CommunityId);
+            if (com == null)
+            {
+                return Fail("请选择您所在的小区");
+            }
             var u = await _userService.Update(dto.MapTo<User>());
             return Success(u);
         }

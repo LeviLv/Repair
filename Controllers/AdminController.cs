@@ -227,6 +227,11 @@ namespace Repair.Controllers
             return Success();
         }
 
+        public async Task<JsonResult> DelCommunity(int id)
+        {
+            await _communityService.DelCommunity(id);
+            return Success();
+        }
 
         #endregion
 
