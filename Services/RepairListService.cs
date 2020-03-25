@@ -193,9 +193,11 @@ namespace Repair.Services
             var user = await _userRepository.FirstOrDefultAsync(p => p.Id == repairList.UserId);
 
             SmsHelper.sendUserMsg(user.Mobile, new { name = repair.Name, tel = repair.Mobile });
+            Console.WriteLine("发送给用户：" + user.Mobile);
 
             var comm = await _communityRepository.FirstOrDefultAsync(p => p.Id == user.CommunityId);
-            SmsHelper.sendRepairMsg(repair.Mobile, new { name = user.Name, tel = user.Mobile, home = $"{comm.Name}-{user.HomeAddress}-{user.HomeNum}" });
+            SmsHelper.sendRepairMsg(repair.Mobile, new { name = user.Name, tel = user.Mobile, home = $"{comm.Name}-{user.HomeNum}" });
+            Console.WriteLine("发送给维修工：" + repair.Mobile);
         }
     }
 }
