@@ -80,7 +80,12 @@
                         }
                     })
                 },
-                getCode:function(){
+                getCode: function () {
+                    var c = checkPhone(this.$data.mobile);
+                    if (!c) {
+                        $.toast("请填写正确的手机号码");
+                        return;
+                    }
                     vue.$data.count = 60;
                     var mobile = this.$data.mobile;
                     var url = "/User/GetSMSCode?mobile=" + mobile;
@@ -101,5 +106,12 @@
                 }
             }
         })
+
+        function checkPhone(phone) {
+            if (!(/^1[3456789]\d{9}$/.test(phone))) {
+                return false;
+            }
+            return true;
+        }
     </script>
 }
