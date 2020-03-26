@@ -44,6 +44,13 @@ namespace Repair.Services
                 Status = (int) RepairStatusEnum.Init
             };
             await _infoRepository.InsertAsync(info);
+
+            var comm = await _communityRepository.FirstOrDefultAsync(p => p.Id == repair.CommunityId);
+            if (comm.AdminId != 0)
+            {
+                var admin = await _userRepository.FirstOrDefultAsync(p => p.Id == comm.AdminId);
+                SmsHelper.sendAdminMsg(admin.Mobile, new { });
+            }
             return model;
         }
 
