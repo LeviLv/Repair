@@ -203,7 +203,7 @@ namespace Repair.Services
             Console.WriteLine("发送给用户：" + user.Mobile);
 
             var comm = await _communityRepository.FirstOrDefultAsync(p => p.Id == user.CommunityId);
-            SmsHelper.sendRepairMsg(repair.Mobile, new { name = user.Name, tel = user.Mobile, home = $"{comm.Name}-{user.HomeNum}" });
+            SmsHelper.sendRepairMsg(repair.Mobile, new { home = $"{comm.Name}-{user.HomeNum}" });
             Console.WriteLine("发送给维修工：" + repair.Mobile);
         }
     }
