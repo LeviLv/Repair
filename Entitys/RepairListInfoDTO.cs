@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Repair.EntityFramework.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ namespace Repair.Entitys
         public int Status { get; set; }
 
         public string StatusName { get; set; }
+
+        public User user { get; set; }
 
         public string Remake { get; set; }
 

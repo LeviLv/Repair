@@ -21,6 +21,11 @@
                     {
                         <div class="card-content-inner">修理工：@item.RepairManName（@item.RepairManMobile）</div>
                     }
+                    @*@if (item.Status == 2)
+                    {
+                        <div class="card-content-inner">地址：@item.User.HomeAddress</div>
+                        <div class="card-content-inner">@item.User.Name (@item.User.Mobile)</div>
+                    }*@
                     <div class="card-content-inner">
                         @item.statusName。（@item.CreateTime?.ToString("yyyy-MM-dd hh:mm")）
                         @if (item.Status == 2)

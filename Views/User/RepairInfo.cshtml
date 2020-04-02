@@ -3,31 +3,37 @@
 }
 @model IList<Repair.Entitys.RepairListInfoDTO>
 
-    <div class="content" id="detail">
-        @if (Model.Count <= 0)
+<div class="content" id="detail">
+    @if (Model.Count <= 0)
+    {
+        <p style="text-align:center">暂无信息</p>
+    }
+    else
+    {
+        @foreach (var item in Model)
         {
-            <p style="text-align:center">暂无信息</p>
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <div class="card">
-                    <div class="card-header">@item.StatusName</div>
-                    <div class="card-content">
-                        <div class="card-content-inner">
-                            @if (string.IsNullOrWhiteSpace(item.Remake))
-                            {
-                                @item.StatusName;
-                            }
-                            else
-                            {
-                                @item.Remake;
-                            }
-                        </div>
-                        <div class="card-content-inner">@item.StatusName。（@item.CreateTime.ToString("yyyy-MM-dd hh:mm")）</div>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    @item.StatusName
                 </div>
-            }
+                <div class="card-content">
+                    <div class="card-content-inner">
+                        @if (string.IsNullOrWhiteSpace(item.Remake))
+                        {
+                            @item.StatusName;
+                        }
+                        else if (item.Status == 2)
+                        {
+                            @Html.Raw($"地址：{item.user.HomeAddress} （{item.user.Name} {item.user.Mobile}）")
+                        }
+                        else
+                        {
+                            @item.Remake;
+                        }
+                    </div>
+                    <div class="card-content-inner">@item.StatusName。（@item.CreateTime.ToString("yyyy-MM-dd hh:mm")）</div>
+                </div>
+            </div>
         }
-    </div>
+    }
+</div>

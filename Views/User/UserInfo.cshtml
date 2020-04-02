@@ -138,6 +138,10 @@
                     if (val != '') {
                         this.$data.user.communityId = Number(val);
                     }
+                    if (!checkAddress(user.homeAddress)) {
+                        $.toast("请填写详细住址，精确到街道");
+                        return;
+                    }
 
                     var url =  '/User/EditUser';
                     var _data = JSON.stringify(this.$data.user);
@@ -209,5 +213,19 @@
                 displayVal = picker.displayValue[0];
             }
         });
+
+        function checkAddress(address) {
+            if (address.indexOf("弄") <= 0
+                && address.indexOf("道") <= 0
+                && address.indexOf("村") <= 0
+                && address.indexOf("号") <= 0
+                && address.indexOf("路") <= 0
+                && address.indexOf("小区") <= 0
+                && address.indexOf("公寓") <= 0
+                && address.indexOf("其他") <= 0) {
+                return false;
+            }
+            return true;
+        }
     </script>
 }
